@@ -94,6 +94,42 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
+
+/* ① 공통 상수·변수 선언부는 그대로… */
+
+/* ② SVG 로드 감시 + 이벤트 바인딩 */
+function waitForSvgAndBind() {
+  const svgObj = document.querySelector('object');
+  if (!svgObj) return console.error('SVG object not found');
+
+  /* 내부 문서가 생겼는지 50 ms마다 체크 */
+  const timer = setInterval(() => {
+    const svgDoc = svgObj.contentDocument;
+    if (!svgDoc) return;           // 아직 없음 → 다음 루프
+
+    clearInterval(timer);          // 발견! 폴링 중단
+    bindRegionEvents(svgDoc);      // 지역 경로에 클릭 리스너 부착
+    updateRegion(currentRegion);   // 초기 차트 동기화
+  }, 50);
+}
+
+/* ③ 실제 이벤트 바인딩 함수 */
+function bindRegionEvents(svgDoc) {
+  const regions = svgDoc.querySelectorAll('.land');
+  regions.forEach(path => {
+    path.style.cursor = 'pointer';
+    path.addEventListener('click', () => {
+      const eng = path.getAttribute('title');
+      currentRegion = eng;
+      updateRegion(eng);
+    });
+  });
+}
+
+/* ④ 최초 진입점 — DOM만 파싱되면 바로 감시 시작 */
+document.addEventListener('DOMContentLoaded', waitForSvgAndBind);
+
+	
   // 영어 -> 한글 지역명 맵핑
   const regionMap = {
     "Seoul": "서울",
