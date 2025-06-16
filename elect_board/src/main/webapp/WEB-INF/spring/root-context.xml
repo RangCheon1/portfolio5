@@ -8,26 +8,29 @@
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
 	
 	<!-- Root Context: defines shared resources visible to all other web components -->
-		<!-- HikariCP 설정 -->
+	
+    <!-- HikariCP 설정 -->
     <bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
-        <property name="driverClassName" value="net.sf.log4jdbc.sql.jdbcapi.DriverSpy"/>
-        <property name="jdbcUrl" value="jdbc:log4jdbc:mysql://192.168.30.215:3306/elect_board?serverTimezone=Asia/Seoul"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/> <!-- log4jdbc 제거 -->
+        <property name="jdbcUrl" value="jdbc:mysql://192.168.30.215:3306/elect_board?serverTimezone=Asia/Seoul"/>
         <property name="username" value="root"/>
         <property name="password" value="1234"/>
     </bean>
 	
-	<!-- MyBatis SqlSessionFactory 설정 -->
-<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
-    <property name="dataSource" ref="dataSource" />
-    <property name="mapperLocations" value="classpath:org/zerock/mapper/*.xml" />
-</bean>
-    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
+	<!-- DataSource 설정 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" destroy-method="close">
         <constructor-arg ref="hikariConfig"/>
     </bean>
-    
-  <!-- Mapper 등록 -->
-<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-    <property name="basePackage" value="org.zerock.mapper" />
-</bean>
+	
+	<!-- MyBatis SqlSessionFactory 설정 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+	    <property name="dataSource" ref="dataSource" />
+	    <property name="mapperLocations" value="classpath:org/zerock/mapper/*.xml" />
+	</bean>
+
+    <!-- Mapper 스캔 -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="org.zerock.mapper" />
+    </bean>
 
 </beans>
