@@ -3,57 +3,56 @@ package org.zerock.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 @Controller
 public class ModelController {
 
-    @PostMapping("/modelShort")
-    public String predictShort(@RequestParam int cityEncoded,
-                               @RequestParam int year,
-                               @RequestParam int month,
-                               @RequestParam double prevUsage,
-                               Model model) {
+    @PostMapping(value = "/modelShort", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> predictShortJson(@RequestBody Map<String, Object> request) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8000/model/short";
 
-        Map<String, Object> request = new HashMap<>();
-        request.put("city_encoded", cityEncoded);
-        request.put("year", year);
-        request.put("month", month);
-        request.put("prev_usage", prevUsage);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-        String result = "단기 예측 결과: " + response.getBody().get("prediction");
-        model.addAttribute("shortResult", result);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
-        return "test";  // result.jsp로 이동
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+        Object prediction = response.getBody().get("prediction");
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("prediction", prediction);
+
+        return result;
     }
 
-    @PostMapping("/modelLong")
-    public String predictLong(@RequestParam int cityEncoded,
-                              @RequestParam int year,
-                              @RequestParam int month,
-                              Model model) {
+    @PostMapping(value = "/modelLong", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> predictLongJson(@RequestBody Map<String, Object> request) {
         RestTemplate restTemplate = new RestTemplate();
         String url = "http://localhost:8000/model/long";
 
-        Map<String, Object> request = new HashMap<>();
-        request.put("city_encoded", cityEncoded);
-        request.put("year", year);
-        request.put("month", month);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        ResponseEntity<Map> response = restTemplate.postForEntity(url, request, Map.class);
-        String result = "장기 예측 결과: " + response.getBody().get("prediction");
-        model.addAttribute("longResult", result);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(request, headers);
 
-        return "test";  // result.jsp로 이동
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+        Object prediction = response.getBody().get("prediction");
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("prediction", prediction);
+
+        return result;
     }
 }
-
-
