@@ -24,7 +24,7 @@ public class ApiController {
     @Autowired
     private GraphmapMapper graphmapMapper;
 
-    @GetMapping("/usage/{year}")
+    @GetMapping(value = "/usage/{year}", produces = "application/json")
     public Map<String, Object> getUsageByRegion(
             @PathVariable("year") int year,
             @RequestParam("region") String region) {

@@ -166,21 +166,36 @@
 
   // SVG 로드 후 각 지역 클릭 이벤트 설정
   window.addEventListener('DOMContentLoaded', () => {
-    const svgObj = document.querySelector('object');
-    svgObj.addEventListener('load', () => {
-      const svgDoc = svgObj.contentDocument;
-      const regions = svgDoc.querySelectorAll('.land');
+  const svgObj = document.querySelector('object');
 
-      regions.forEach(path => {
-        path.style.cursor = 'pointer';
-        path.addEventListener('click', () => {
-          const engRegion = path.getAttribute('title');  // 영어 key
-          currentRegion = engRegion;  // 클릭한 영어 key로 현재 지역 갱신
-          updateRegion(engRegion);
-        });
+  function bindEvents() {
+    const svgDoc = svgObj.contentDocument;
+    if (!svgDoc) {
+      console.error("SVG 문서 접근 불가");
+      return;
+    }
+    const regions = svgDoc.querySelectorAll('.land');
+    regions.forEach(path => {
+      path.style.cursor = 'pointer';
+      path.addEventListener('click', () => {
+        const engRegion = path.getAttribute('title');
+        currentRegion = engRegion;
+        updateRegion(engRegion);
       });
     });
-  });
+
+    updateRegion(currentRegion);
+  }
+
+  if (svgObj.contentDocument) {
+    // 이미 로드된 경우
+    bindEvents();
+  } else {
+    svgObj.addEventListener('load', () => {
+      bindEvents();
+    });
+  }
+});
 
   // 지역 및 연도 기준 데이터 갱신 함수
   function updateRegion(engRegionName) {
@@ -197,7 +212,7 @@
         const h2 = document.getElementById("usageTitle");
         h2.textContent = year + "년 " + selectedRegionKor + " 전력 사용량 그래프";
 
-        chart.data.datasets[0].label = `${selectedRegionKor} 월별 전력 사용량`;
+        chart.data.datasets[0].label = `월별 전력 사용량`;
         chart.data.datasets[0].data = json.monthlyUsage;
         chart.update();
       })
