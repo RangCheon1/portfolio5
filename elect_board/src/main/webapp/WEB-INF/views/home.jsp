@@ -28,13 +28,35 @@
     padding-left:150px;
     border-radius: 4px;
     }
-    .oversvg{
-    width:600px;
-    height:600px;
-    }
     #usageTitle{
     display:inline-block;
     }
+    .middle.map {
+  	position: relative;
+  	padding-left: 70px;
+	}
+
+	.svg-map,
+	.oversvg {
+  	position: absolute;
+	}
+
+	.svg-map {
+  	z-index: 1;
+  	top: 0;
+  	left: 0;
+  	width: 600px;
+  	height: 800px;
+	}
+	
+	.oversvg {
+  	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
+  	top:153;
+  	left: 3;
+  	pointer-events: none; /* 클릭은 SVG가 받도록 */
+  	width: 600px;
+  	height: 650px;
+	}
   </style>
 </head>
 <body>
@@ -56,7 +78,7 @@
     <option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
   </select>
   </div>
-  <object type="image/svg+xml"
+  <object class='svg-map' type="image/svg+xml"
           data="${pageContext.request.contextPath}/resources/static/svg/southKoreaLow.svg"
           width="600" height="800">
     브라우저가 SVG를 지원하지 않습니다.
