@@ -15,9 +15,6 @@
 	width:45%;
 	height:800px;
     }
-    .map{
-    padding-left:70px;
-    }
     .year-select-container{
     position: absolute;
     top: 10px;
