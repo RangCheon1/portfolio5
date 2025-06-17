@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.zerock.mapper.ElectUsageMapper">
+
+    <select id="getUsageByYear" resultType="org.zerock.domain.ElectUsageVO">
+        SELECT year, region,
+               SUM(month1) AS month1, SUM(month2) AS month2, SUM(month3) AS month3,
+               SUM(month4) AS month4, SUM(month5) AS month5, SUM(month6) AS month6,
+               SUM(month7) AS month7, SUM(month8) AS month8, SUM(month9) AS month9,
+               SUM(month10) AS month10, SUM(month11) AS month11, SUM(month12) AS month12
+        FROM elect_usage
+        WHERE year IN
+        <foreach item="y" collection="yearList" open="(" separator="," close=")">
+            #{y}
+        </foreach>
+        <if test="region != null and region != 'all'">
+            AND region = #{region}
+        </if>
+        GROUP BY year, region
+        ORDER BY year ASC, region ASC
+    </select>
+
+    <select id="getAllRegions" resultType="string">
+        SELECT DISTINCT region FROM elect_usage ORDER BY region
+    </select>
+
+</mapper>
