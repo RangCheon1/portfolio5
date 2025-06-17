@@ -18,5 +18,4 @@ public class GraphmapVO {
 	public int month10;
 	public int month11;
 	public int month12;
-	
 }

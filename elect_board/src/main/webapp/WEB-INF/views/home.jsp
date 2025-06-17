@@ -22,20 +22,27 @@
     z-index: 10;
     background: rgba(255,255,255,0.8);
     padding: 5px;
-    padding-left:150px;
+    padding-left:320px;
     border-radius: 4px;
     }
     #usageTitle{
     display:inline-block;
     }
+    #selectBox{
+    display:inline-block;
+    padding-left:220px;
+    }
     .middle.map {
   	position: relative;
   	padding-left: 70px;
 	}
-
+	.chart{
+	padding-top:130px;
+	}
 	.svg-map,
 	.oversvg {
   	position: absolute;
+  	padding-left:200px;
 	}
 
 	.svg-map {
@@ -73,6 +80,7 @@
     <option value="2022" <c:if test="${year == 2022}">selected</c:if>>2022</option>
     <option value="2023" <c:if test="${year == 2023}">selected</c:if>>2023</option>
     <option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
+    <option value="2025" <c:if test="${year == 2025}">selected</c:if>>2025</option>
   </select>
   </div>
   <object class='svg-map' type="image/svg+xml"
@@ -85,9 +93,35 @@
 
 <div class="middle chart">
 
-  <h2 id="usageTitle">${year}년 ${region} 전력 사용량 그래프</h2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <label>도시:</label>&nbsp;
-  <label>모델:</label> 
+<h2 id="usageTitle">${year}년 ${region} 전력 사용량 그래프</h2>
+<div id="selectBox">
+  <label>도시:</label>
+  <select id="citySelect">
+    <option value="강원도">강원도</option>
+  <option value="경기도">경기도</option>
+  <option value="경상남도">경상남도</option>
+  <option value="경상북도">경상북도</option>
+  <option value="광주">광주</option>
+  <option value="대구">대구</option>
+  <option value="대전">대전</option>
+  <option value="부산">부산</option>
+  <option value="서울">서울</option>
+  <option value="세종">세종</option>
+  <option value="울산">울산</option>
+  <option value="인천">인천</option>
+  <option value="전라남도">전라남도</option>
+  <option value="전라북도">전라북도</option>
+  <option value="제주도">제주도</option>
+  <option value="충청남도">충청남도</option>
+  <option value="충청북도">충청북도</option>
+</select>
+  &nbsp;
+  <label for="predictionType">모델:</label> 
+  <select id="predictionType">
+    <option value="short">단기 모델</option>
+    <option value="long">장기 모델</option>
+</select>
+</div>
   <canvas id="usageChart" width="600" height="300"></canvas>
 </div>
 </div>
@@ -95,168 +129,270 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 
-/* ① 공통 상수·변수 선언부는 그대로… */
+$(document).ready(function() {
+		
+	  const cityCodeMap = {
+	    "강원도": 0,
+	    "경기도": 1,
+	    "경상남도": 2,
+	    "경상북도": 3,
+	    "광주": 4,
+	    "대구": 5,
+	    "대전": 6,
+	    "부산": 7,
+	    "서울": 8,
+	    "세종": 9,
+	    "울산": 10,
+	    "인천": 11,
+	    "전라남도": 12,
+	    "전라북도": 13,
+	    "제주도": 14,
+	    "충청남도": 15,
+	    "충청북도": 16
+	  };
 
-/* ② SVG 로드 감시 + 이벤트 바인딩 */
-function waitForSvgAndBind() {
-  const svgObj = document.querySelector('object');
-  if (!svgObj) return console.error('SVG object not found');
-
-  /* 내부 문서가 생겼는지 50 ms마다 체크 */
-  const timer = setInterval(() => {
-    const svgDoc = svgObj.contentDocument;
-    if (!svgDoc) return;           // 아직 없음 → 다음 루프
-
-    clearInterval(timer);          // 발견! 폴링 중단
-    bindRegionEvents(svgDoc);      // 지역 경로에 클릭 리스너 부착
-    updateRegion(currentRegion);   // 초기 차트 동기화
-  }, 50);
-}
-
-/* ③ 실제 이벤트 바인딩 함수 */
-function bindRegionEvents(svgDoc) {
-  const regions = svgDoc.querySelectorAll('.land');
-  regions.forEach(path => {
-    path.style.cursor = 'pointer';
-    path.addEventListener('click', () => {
-      const eng = path.getAttribute('title');
-      currentRegion = eng;
-      updateRegion(eng);
-    });
-  });
-}
-
-/* ④ 최초 진입점 — DOM만 파싱되면 바로 감시 시작 */
-document.addEventListener('DOMContentLoaded', waitForSvgAndBind);
-
+	  const regionMap = {
+	    "Seoul": "서울",
+	    "Busan": "부산",
+	    "Daegu": "대구",
+	    "Incheon": "인천",
+	    "Gwangju": "광주",
+	    "Daejeon": "대전",
+	    "Ulsan": "울산",
+	    "Gyeonggi": "경기도",
+	    "Gangwon": "강원도",
+	    "North Chungcheong": "충청북도",
+	    "South Chungcheong": "충청남도",
+	    "North Jeolla": "전라북도",
+	    "South Jeolla": "전라남도",
+	    "North Gyeongsang": "경상북도",
+	    "South Gyeongsang": "경상남도",
+	    "Jeju": "제주도",
+	    "Sejong": "세종"
+	  };
+	  const regionMapReverse = {};
+	  for (const eng in regionMap) {
+	    regionMapReverse[regionMap[eng]] = eng;
+	  }
 	
-  // 영어 -> 한글 지역명 맵핑
-  const regionMap = {
-    "Seoul": "서울",
-    "Busan": "부산",
-    "Daegu": "대구",
-    "Incheon": "인천",
-    "Gwangju": "광주",
-    "Daejeon": "대전",
-    "Ulsan": "울산",
-    "Gyeonggi": "경기도",
-    "Gangwon": "강원도",
-    "North Chungcheong": "충청북도",
-    "South Chungcheong": "충청남도",
-    "North Jeolla": "전라북도",
-    "South Jeolla": "전라남도",
-    "North Gyeongsang": "경상북도",
-    "South Gyeongsang": "경상남도",
-    "Jeju": "제주도",
-    "Sejong": "세종"
-  };
+	  const base = '${pageContext.request.contextPath}';
 
-  // 한글 -> 영어 역맵핑 생성
-  const regionMapReverse = {};
-  for (const eng in regionMap) {
-    regionMapReverse[regionMap[eng]] = eng;
-  }
+	  let year = '<c:out value="${year != null ? year : '2023'}"/>';
+	  let currentRegionKor = '<c:out value="${region != null ? region : '서울'}"/>';
+	  let currentRegionEng = regionMapReverse[currentRegionKor];
 
-  let year = '${year}';
+	  const ctx = document.getElementById('usageChart').getContext('2d');
+	  let usageData = new Array(12).fill(null);
+	  let predictionData = new Array(12).fill(null);
 
-  // 초기 지역 한글명을 영어 key로 변환하여 저장
-  let currentRegionKor = '${region}';  // ex) '강원도'
-  let currentRegion = regionMapReverse[currentRegionKor];  // ex) 'Gangwon'
-
-  const base = '${pageContext.request.contextPath}';
-
-  const ctx = document.getElementById('usageChart').getContext('2d');
-  const chart = new Chart(ctx, {
-	  type: 'bar',  // line → bar 변경
-	  data: {
-	    labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-	    datasets: [{
-	      label: ' 월별 전력 사용량',
-	      data: [
-	        <c:forEach var="m" items="${monthlyUsage}" varStatus="loop">
-	          ${m}<c:if test="${!loop.last}">,</c:if>
-	        </c:forEach>
-	      ],
-	      backgroundColor: 'rgba(75, 192, 192, 0.6)',  // 바 그래프는 borderColor 대신 backgroundColor가 주로 쓰임
-	      borderColor: 'rgba(75, 192, 192, 1)',
-	      borderWidth: 1
-	    }]
-	  },
-	  options: {
-	    scales: {
-	      y: {
-	        beginAtZero: true,
-	        ticks: {
-	          stepSize: 10  // 필요하면 y축 간격 설정
+	  // 차트 초기화: 두 개 데이터셋 (실제, 예측)
+	  const chart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	      labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+	      datasets: [
+	        {
+	          label: '실제 월별 전력 사용량',
+	          data: usageData,
+	          borderColor: 'rgba(75, 192, 192, 1)',
+	          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+	          fill: false,
+	          tension: 0.1,
+	          yAxisID: 'y',
+	        },
+	        {
+	          label: '예측 월별 전력 사용량',
+	          data: predictionData,
+	          borderColor: 'rgba(255, 99, 132, 1)',
+	          backgroundColor: 'rgba(255, 99, 132, 0.2)',
+	          fill: false,
+	          tension: 0.1,
+	          yAxisID: 'y',
+	        }
+	      ]
+	    },
+	    options: {
+	      scales: {
+	        y: {
+	          beginAtZero: true,
+	          ticks: {
+	            stepSize: 10
+	          }
 	        }
 	      }
 	    }
+	  });
+
+	  // 실제 사용량 데이터 불러오기 및 차트 업데이트
+	  function fetchUsageData(year, regionKor) {
+	    return fetch(base + '/api/usage/' + year + '?region=' + encodeURIComponent(regionKor))
+	      .then(res => res.json())
+	      .then(json => {
+	        usageData = json.monthlyUsage;
+	        chart.data.datasets[0].data = usageData;
+	        chart.update();
+	      })
+	      .catch(err => {
+	        console.error("실제 사용량 데이터 로딩 실패", err);
+	        alert("실제 사용량 데이터 로딩 실패");
+	      });
 	  }
-	});
 
-  // 연도 선택 변경시
-  document.getElementById('yearSelect').addEventListener('change', e => {
-    year = e.target.value;
-    updateRegion(currentRegion);
+	  // 예측 데이터 불러오기 (단기 or 장기)
+	  function fetchPredictionData(year, regionKor, predictionType) {
+  const cityEncoded = cityCodeMap[regionKor];
+  if (cityEncoded === undefined) {
+    alert('알 수 없는 도시명입니다.');
+    return Promise.reject('Unknown city');
+  }
+
+  let predictions = new Array(12).fill(null);
+
+  if (predictionType === 'short') {
+    // 단기 모델: 각 월별 이전 사용량 받아서 예측 요청
+    const promises = [];
+    for (let month = 1; month <= 12; month++) {
+      const promise = $.ajax({
+        url: '/getPrevUsage',
+        method: 'GET',
+        dataType: 'json',
+        data: { region: regionKor, year: year, month: month }
+      }).then(prevUsage => {
+        const usage = prevUsage.usage;
+        if (!usage || usage === 0) {
+          predictions[month - 1] = null;
+          return;
+        }
+        const data = {
+          city_encoded: cityEncoded,
+          year: year,
+          month: month,
+          prev_usage: usage
+        };
+        return $.ajax({
+          url: '/modelShort',
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify(data)
+        }).then(response => {
+          predictions[month - 1] = response.prediction;
+        }).catch(() => {
+          predictions[month - 1] = null;
+        });
+      }).catch(() => {
+        predictions[month - 1] = null;
+      });
+      promises.push(promise);
+    }
+    return Promise.all(promises).then(() => {
+      predictionData = predictions;
+      chart.data.datasets[1].data = predictionData;
+      chart.update();
+    });
+  } else if (predictionType === 'long') {
+    // 장기 모델: 바로 예측 요청
+    const promises = [];
+    for (let month = 1; month <= 12; month++) {
+      const data = {
+        city_encoded: cityEncoded,
+        year: year,
+        month: month
+      };
+      const promise = $.ajax({
+        url: '/modelLong',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(data)
+      }).then(response => {
+        predictions[month - 1] = response.prediction;
+      }).catch(() => {
+        predictions[month - 1] = null;
+      });
+      promises.push(promise);
+    }
+    return Promise.all(promises).then(() => {
+      predictionData = predictions;
+      chart.data.datasets[1].data = predictionData;
+      chart.update();
+    });
+  }
+}
+
+// refreshAll 함수에서 Promise 체인으로 처리
+function refreshAll() {
+  const predictionType = $('#predictionType').val();
+  fetchUsageData(year, currentRegionKor).then(() => {
+    return fetchPredictionData(year, currentRegionKor, predictionType);
+  }).then(() => {
+    
+  }).catch(() => {
+    
   });
+}
+	  // 연도 선택 변경
+	  $('#yearSelect').on('change', function() {
+	    year = $(this).val();
+	    
+	    $('#usageTitle').text(year+'년 '+currentRegionKor+" 전력 사용량 그래프")
+	    refreshAll();
+	  });
 
-  // SVG 로드 후 각 지역 클릭 이벤트 설정
-  window.addEventListener('DOMContentLoaded', () => {
-  const svgObj = document.querySelector('object');
+	  // 예측 타입 변경
+	  $('#predictionType').on('change', function() {
+	    refreshAll();
+	  });
+	  $('#citySelect').on('change', function() {
+		  const selectedKor = $(this).val();
+		  if (!selectedKor) return;
 
-  function bindEvents() {
-    const svgDoc = svgObj.contentDocument;
-    if (!svgDoc) {
-      console.error("SVG 문서 접근 불가");
-      return;
-    }
-    const regions = svgDoc.querySelectorAll('.land');
-    regions.forEach(path => {
-      path.style.cursor = 'pointer';
-      path.addEventListener('click', () => {
-        const engRegion = path.getAttribute('title');
-        currentRegion = engRegion;
-        updateRegion(engRegion);
-      });
-    });
+		  currentRegionKor = selectedKor;
+		  currentRegionEng = regionMapReverse[selectedKor];
+		  $('#usageTitle').text(year+'년 '+currentRegionKor+" 전력 사용량 그래프")
+		  refreshAll();
+		});
+	$('#citySelect').val(currentRegionKor);
+	
+	waitForSvgAndBind();
+	  refreshAll(); 
+	  // SVG 지도 내 지역 클릭 시
+	  function bindRegionEvents(svgDoc) {
+	    const regions = svgDoc.querySelectorAll('.land');
+	    regions.forEach(path => {
+	      path.style.cursor = 'pointer';
+	      path.addEventListener('click', () => {
+	        const eng = path.getAttribute('title');
+	        currentRegionEng = eng;
+	        currentRegionKor = regionMap[eng];
+	        if (!currentRegionKor) {
+	          alert("알 수 없는 지역: " + eng);
+	          return;
+	        }
+	        $('#citySelect').val(currentRegionKor);
 
-    updateRegion(currentRegion);
-  }
+	        $('#usageTitle').text(year+'년 '+currentRegionKor+" 전력 사용량 그래프")
+	        
+	        refreshAll();
+	      });
+	    });
+	  }
 
-  if (svgObj.contentDocument) {
-    // 이미 로드된 경우
-    bindEvents();
-  } else {
-    svgObj.addEventListener('load', () => {
-      bindEvents();
-    });
-  }
-});
+	  // SVG object 감시 및 이벤트 바인딩
+	  function waitForSvgAndBind() {
+	    const svgObj = document.querySelector('object');
+	    if (!svgObj) return console.error('SVG object not found');
 
-  // 지역 및 연도 기준 데이터 갱신 함수
-  function updateRegion(engRegionName) {
-    const selectedRegionKor = regionMap[engRegionName];
+	    const timer = setInterval(() => {
+	      const svgDoc = svgObj.contentDocument;
+	      if (!svgDoc) return;
 
-    if (!selectedRegionKor) {
-      alert("알 수 없는 지역: " + engRegionName);
-      return;
-    }
+	      clearInterval(timer);
+	      bindRegionEvents(svgDoc);
+	    }, 50);
+	  }
 
-    fetch(base + '/api/usage/' + year + '?region=' + encodeURIComponent(selectedRegionKor))
-      .then(res => res.json())
-      .then(json => {
-        const h2 = document.getElementById("usageTitle");
-        h2.textContent = year + "년 " + selectedRegionKor + " 전력 사용량 그래프";
-
-        chart.data.datasets[0].label = `월별 전력 사용량`;
-        chart.data.datasets[0].data = json.monthlyUsage;
-        chart.update();
-      })
-      .catch(err => {
-        console.error(err);
-        alert("데이터 로딩 실패");
-      });
-  }
+	});
+	
+	
 </script>
 </body>
 </html>
