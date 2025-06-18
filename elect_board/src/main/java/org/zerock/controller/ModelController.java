@@ -102,9 +102,8 @@ public class ModelController {
         return result;
     }
 
-    /**
-     * 전년도 사용량 조회
-     */
+    
+    // 전년도 사용량 조회
     @GetMapping("/getPrevUsage")
     @ResponseBody
     public Map<String, Float> getPrevUsage(@RequestParam String region,
