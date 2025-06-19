@@ -9,4 +9,12 @@
         FROM elect_usage
         WHERE region = #{region} AND year = #{year}
     </select>
+    
+    <select id="selectMonthlyUsageByYear" resultType="org.zerock.domain.GraphmapVO" parameterType="map">
+	    SELECT year, region,
+	           month1, month2, month3, month4, month5, month6,
+	           month7, month8, month9, month10, month11, month12
+	    FROM elect_usage
+	    WHERE region = #{region} AND year = #{year}
+	</select>
 </mapper>

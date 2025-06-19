@@ -10,17 +10,18 @@ public class ModelService {
 
     @Autowired
     private ModelMapper modelMapper;
-
+    
+    // ì „ë ¥ ì‚¬ìš©ëŸ‰ ê°€ì ¸ì˜¤ê¸°(1ê°œì›”ì¹˜)
     public Float getPrevYearUsage(String region, int year, int month) {
-        String prevYear = String.valueOf(year - 1); // Àü³âµµ ¹®ÀÚ¿­
+        String prevYear = String.valueOf(year);
 
         GraphmapVO vo = modelMapper.getPrevYearUsage(region, prevYear);
 
-        if (vo == null) { // DB °á°ú ¾øÀ½
+        if (vo == null) { // DB ê²°ê³¼ ì—†ìŒ
             return null;
         }
 
-        // ÇØ´ç ¿ù °ª ¹İÈ¯
+        // í•´ë‹¹ ì›” ê°’ ë°˜í™˜
         switch (month) {
             case 1: return (float) vo.getMonth1();
             case 2: return (float) vo.getMonth2();
@@ -34,7 +35,12 @@ public class ModelService {
             case 10: return (float) vo.getMonth10();
             case 11: return (float) vo.getMonth11();
             case 12: return (float) vo.getMonth12();
-            default: return null; // 1~12 ÀÌ¿Ü Àß¸øµÈ °ª
+            default: return null; // 1~12 ì´ì™¸ ì˜ëª»ëœ ê°’
         }
+    }
+    
+    // ì „ë ¥ ì‚¬ìš©ëŸ‰ ê°€ì ¸ì˜¤ê¸°(1~12ì›”)
+    public GraphmapVO getMonthlyUsageByYear(String region, int year) {
+        return modelMapper.selectMonthlyUsageByYear(region, year);
     }
 }

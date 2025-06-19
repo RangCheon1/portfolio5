@@ -10,4 +10,8 @@ public class TestController {
     public String testPage() {
         return "test"; // /WEB-INF/views/test.jsp로 매핑됨 (ViewResolver 기준)
     }
+    @GetMapping("/short")
+    public String shortPage() {
+        return "short"; // /WEB-INF/views/test.jsp로 매핑됨 (ViewResolver 기준)
+    }
 }

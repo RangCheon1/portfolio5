@@ -1,16 +1,24 @@
 @charset "UTF-8";
+*{color: white;}
+body{background-color: rgb(2,7,21);}
 
 #box {
-    width: 1080px; /* 데스크탑 */
-    height: 900px;
+    width: 1500px; /* 데스크탑 */
+    height: 1000px;
     margin: 0 auto;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
+#boardBox {
+	margin: 0 auto;
+	width: 1400px;
+	height: 900px;
+}
+
 #main {
-    width: 1080px;
+    width: 1400px;
     height: 625px; /* 45% of 500px */
     display: flex; /* 가로로 배치 */
 }
@@ -20,27 +28,26 @@
 	height: 625px;
 }
 
-#prevUsageBox, #tMonthUsageBox{
+#prevUsageBox, #sMonthUsageBox{
 	width: 589px;
     height: 307.5px;
     overflow: hidden;
-    border: 3px solid #444444;
     border-radius: 10px;
     padding: 0px;
     box-sizing: border-box;
     margin-right: 5px;
 }
-#tMonthUsageBox{
+#sMonthUsageBox{
 	margin-top: 10px;
 }
-#prevUsageBox h2, #tMonthUsageBox h2, #yearUsageBox h2{margin-left:15px;}
+#prevUsageBox h2, #sMonthUsageBox h2, #yearUsageBox h2{margin-left:15px;}
 
 #mainRight{
 	width: 486px;
 	height: 625px;
 }
 #monthUsageBox, #yearUsageBox{
-	width: 481px;
+	width: 500px;
     height: 307.5px;
     overflow: hidden;
     border-radius: 10px;
@@ -50,7 +57,6 @@
 }
 
 #yearUsageBox{
-	border: 3px solid #444444;
 	margin-top: 10px;
 }
 
@@ -61,6 +67,7 @@
     flex-wrap: wrap;
     justify-content: flex-start; /* 왼쪽부터 정렬 */
     align-content: flex-start; /* 위에서부터 채우기 */
+    margin: 0 auto;
 }
 
 .menu {
@@ -77,6 +84,22 @@
     text-align: center;
     word-break: break-word;
     margin: 15px 5px 5px 5px;
+    background-color:rgb(27,40,49);
 }
 .menu h2, .menu p{margin:0px 0px 7px 0px;}
-.menu p{color:#444444}
+
+#chart4Box{
+	display:inline-block;
+	overflow:hidden;
+	width:200px;
+	height:200px;
+	}
+#nowMonthBox{
+	display:inline-block;
+	overflow:hidden;
+	text-align:center;
+	width:250px;
+	height:100px;
+	position:relative;
+	bottom:50px;
+	}

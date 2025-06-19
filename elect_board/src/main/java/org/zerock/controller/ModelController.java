@@ -8,6 +8,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import org.zerock.domain.GraphmapVO;
 import org.zerock.service.ModelService;
 
 @Controller
@@ -103,7 +104,7 @@ public class ModelController {
     }
 
     
-    // 전년도 사용량 조회
+    // 전력 사용량 조회
     @GetMapping("/getPrevUsage")
     @ResponseBody
     public Map<String, Float> getPrevUsage(@RequestParam String region,
@@ -114,4 +115,28 @@ public class ModelController {
         map.put("usage", usage);
         return map;
     }
+    
+    
+    // 전력 사용량 조회(1월 ~ 12월)
+    @GetMapping("/getPrevAllUsage")
+    @ResponseBody
+    public Map<String, Object> getPrevAllUsage(@RequestParam String region,
+                                               @RequestParam int year) {
+        int prevYear = year;
+        GraphmapVO vo = modelService.getMonthlyUsageByYear(region, prevYear);
+
+        Map<String, Object> result = new HashMap<>();
+        if (vo == null) {
+            result.put("usage", new double[0]);
+        } else {
+            double[] usageArray = new double[] {
+                vo.getMonth1(), vo.getMonth2(), vo.getMonth3(), vo.getMonth4(),
+                vo.getMonth5(), vo.getMonth6(), vo.getMonth7(), vo.getMonth8(),
+                vo.getMonth9(), vo.getMonth10(), vo.getMonth11(), vo.getMonth12()
+            };
+            result.put("usage", usageArray);
+        }
+        return result;
+    }
+
 }
