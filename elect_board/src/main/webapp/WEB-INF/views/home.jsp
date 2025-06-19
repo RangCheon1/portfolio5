@@ -5,184 +5,7 @@
 <html>
 <head>
 <title>Home</title>
-<style>
-body {
-	background-color: #dddddd;
-}
-
-div {
-	box-sizing: border-box;
-}
-.div-main-h2{
-	color:#444444;
-}
-.fullwide{
-	margin-left:150px;
-	margin-top:65px;
-}
-.middle {
-	position: relative;
-	display: inline-block;
-	vertical-align: top;
-	border: 1px solid #b4b4b4;
-	border-radius: 5px;
-	padding-left: 15px;
-	padding-right: 15px;
-}
-
-.year-select-container {
-	position: absolute;
-	top: 10px;
-	left: 10px;
-	z-index: 10;
-	padding: 5px;
-	padding-left: 200px;
-	border-radius: 4px;
-}
-.select{
-	border-radius:5px;
-	font-size:22px;
-	padding-left:3px;
-	height:28px;
-}
-.select2{
-	border-radius:5px;
-	font-size:14px;
-	padding-left:3px;
-	height:19px;
-}
-.select-label{
-	font-size:22px;
-}
-.select-label2{
-	font-size:15px;
-}
-.explain-button{
-	background-color:#eeeeee;
-	border-radius:30px;
-	border:1px solid black;
-}
-.explain-button:active{
-	background-color:#aaaaaa;
-}
-#usageTitle {
-	display: inline-block;
-}
-#totalTitle{
-	display: inline-block;
-	margin-bottom:0px;
-}
-
-#selectBox {
-	display: inline-block;
-	padding-left: 240px;
-}
-
-.middle.map {
-	position: relative;
-	padding-left: 70px;
-}
-
-.map {
-	background-color: white;
-	margin-left: 60px;
-	height: 850px;
-	width: 33%;
-	min-width:600px;
-}
-
-.chart {
-
-	background-color: white;
-	height: 520px;
-	min-width: 800px;
-	width: 45%;
-}
-.up{
-	display: inline-block;
-	min-width: 800px;
-	width: 45%;
-	margin-left:10px;
-}
-.down{
-	background-color: white;
-	min-width: 800px;
-	width: 45%;
-	height: 315px;
-	margin-top:15px;
-}
-.svg-map, .oversvg {
-	position: absolute;
-	padding-left: 45px;
-}
-#t-text-container{
-	position: relative;
-	display: inline-block;
-	vertical-align: top;
-	padding-left:180px;
-	width:763px;
-}
-.t-text{
-	position: relative;
-	display: inline-block;
-	vertical-align: top;
-	height:80px;
-	text-align:center;
-	width:150px;
-}
-.tt1{
-
-}
-.tt2{
-	margin-left:170px;
-}
-#totalUse{
-	color:rgb(75, 192, 192);
-}
-#totalPre{
-	color:rgb(255, 99, 132);
-}
-.t-h2{
-	margin-top:10px;
-	margin-bottom:0px;
-	font-size:30px;
-}
-#totalChart{
-	margin-top:0px;
-}
-.svg-map {
-	z-index: 1;
-	top: 0;
-	left: 0;
-	width: 600px;
-	height: 800px;
-}
-
-.oversvg {
-	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
-	top: 153;
-	left: 3;
-	pointer-events: none; /* 클릭은 SVG가 받도록 */
-	width: 600px;
-	height: 650px;
-}
-.annotation{
-	color:#7c7c7c;
-	font-size:12px;
-}
-.explain-box{
-	position:fixed;
-    margin-top:6px;
-    padding:12px 14px;
-    border:1px solid #888;
-    border-radius:8px;
-    background:#fefefe;
-    font-size:14px;
-    line-height:1.4;
-    width:414px;
-    box-shadow:2px 2px 4px rgba(0,0,0,0.7);
-}
-</style>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/home.css" />
 </head>
 <body>
 	<div class="fullwide">
@@ -201,6 +24,10 @@ div {
 					<option value="2023" <c:if test="${year == 2023}">selected</c:if>>2023</option>
 					<option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
 					<option value="2025" <c:if test="${year == 2025}">selected</c:if>>2025</option>
+					<option value="2026" <c:if test="${year == 2026}">selected</c:if>>2026</option>
+					<option value="2027" <c:if test="${year == 2027}">selected</c:if>>2027</option>
+					<option value="2028" <c:if test="${year == 2028}">selected</c:if>>2028</option>
+					<option value="2029" <c:if test="${year == 2029}">selected</c:if>>2029</option>
 				</select>
 			</div>
 			<object class='svg-map' type="image/svg+xml"
@@ -239,8 +66,8 @@ div {
 					<option value="long">장기 모델</option>
 				</select>
 				
-				<div id="modelExplainBox" class="explain-box" style="display:none;">
-    				• <b>단기 모델</b> : 직전 1년치 월별 사용량을 입력값으로 삼아<br>다음 1년(12 개월)을 예측합니다. 예상 정확도가 높습니다.<br>
+				<div id="modelExplainBox" class="explain-box" style="display:none; color:black;">
+    				• <b>단기 모델</b> : 직전 1년치 월별 사용량을 입력값으로 삼아<br>다음 1년을 예측합니다. 예상 정확도가 높습니다.<br>
     				• <b>장기 모델</b> : 시·도별 월별 전력 사용량으로 장기적인<br>추세를 예측합니다. 예상 정확도는 단기 모델에 비해 낮습니다.<br>
 				</div>
 			</div>
@@ -248,7 +75,7 @@ div {
 			
 		</div>
 		<div class='middle down'>
-		<h2 id='totalTitle' class='div-main-h2'>2014년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; ※총 예측 사용량은 실제 사용량이 존재하는 월까지 합산됩니다.</label><br>
+		<h2 id='totalTitle' class='div-main-h2'>2014년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
 			<div id='t-text-container'>
 				<div class='t-text tt1'>
 				<h2 id='totalUse' class='t-h2'></h2>
@@ -256,7 +83,7 @@ div {
 				</div>
 				<div class='t-text tt2'>
 				<h2 id='totalPre' class='t-h2'></h2>
-				예측 사용량
+				총 예측 사용량
 				</div>
 			</div>
 		<canvas id="totalChart" width="600" height="120"></canvas>
@@ -356,12 +183,25 @@ $(document).ready(function() {
 	    },
 	    options: {
 	    	scales: {
+	    		x: {
+	    			ticks: {
+	    				color:'#ececec'
+	    			}
+	    		},
 	        	y: {
 	          		beginAtZero: true,
 		        	ticks: {
-		                stepSize:1000// 눈금 간격 설정
+		        		color:'#ececec',
+		                stepSize:1000 // 눈금 간격 설정
 		              }
 	        	}
+	      	},
+	      	plugins: {
+	      	    legend: {
+	      	      	labels: {
+	      	        	color: '#ececec' // 범례 항목 글자 색
+	      	      	}
+	      	    }
 	      	}
 	    }
 	});
@@ -382,8 +222,13 @@ $(document).ready(function() {
 	        chart.update();
 	    })
 	    .catch(err => {
-	        console.error("실제 사용량 데이터 로딩 실패", err);
-	        alert("실제 사용량 데이터 로딩 실패");
+	        /* console.error("실제 사용량 데이터 로딩 실패", err);
+	        alert("실제 사용량 데이터 로딩 실패"); */
+	        for(i=0;i<=11;i++){
+	        	chart.data.datasets[0].data[i]=0;
+	        }
+	        sumVal=0;
+	        chart.update();
 	    });
 	}
 
@@ -414,7 +259,7 @@ $(document).ready(function() {
         	}
         	const data = {
           		city_encoded: cityEncoded,
-          		year: year,
+          		year: year-2014,
           		month: month,
           		prev_usage: usage
         	};
@@ -438,15 +283,23 @@ $(document).ready(function() {
     	sumPre=0;
       	predictionData = predictions;
       	chart.data.datasets[1].data = predictionData;
-      	for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
-      		//총 예측 사용량은 실제 사용량이 존재하는 월까지만 합산
-      		if(chart.data.datasets[0].data[i]!=0){
+      	if(chart.data.datasets[0].data[0]!=0){
+      		for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
+          		//총 예측 사용량은 실제 사용량이 존재하는 월까지만 합산
+          		if(chart.data.datasets[0].data[i]!=0){
+          			sumPre+=chart.data.datasets[1].data[i]*100
+          		}
+          		//실체 사용량이 0인 i달일 떄
+          		else{
+          				sumPre+=0;
+          		}
+            }
+      	}
+      	else{
+      		for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
       			sumPre+=chart.data.datasets[1].data[i]*100
       		}
-      		else{
-      			sumPre+=0;
-      		}
-        }
+      	}
       	chart.update();
     });
   	} else if (predictionType === 'long') {
@@ -475,15 +328,24 @@ $(document).ready(function() {
     	sumPre=0;
       	predictionData = predictions;
       	chart.data.datasets[1].data = predictionData;
-      	for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
-      		//총 예측 사용량은 실제 사용량이 존재하는 월까지만 합산
-      		if(chart.data.datasets[0].data[i]!=0){
+      	//1월 실제 사용량이 0이 아닐 때 (그 해의 실제 사용량이 전부 비어있지 않을 때)
+      	if(chart.data.datasets[0].data[0]!=0){
+      		for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
+          		//총 예측 사용량은 실제 사용량이 존재하는 월까지만 합산
+          		if(chart.data.datasets[0].data[i]!=0){
+          			sumPre+=chart.data.datasets[1].data[i]*100
+          		}
+          		else{
+          				sumPre+=0;
+          		}
+            }
+      	}
+      	//1월 실제 사용량이 0일 때 (그 해의 실제 사용량이 전부 비어있을 때)
+      	else{
+      		for(i=0;i<=chart.data.datasets[1].data.length-1;i++){
       			sumPre+=chart.data.datasets[1].data[i]*100
       		}
-      		else{
-      			sumPre+=0;
-      		}
-        }
+      	}
       	chart.update();
     });
 	}
@@ -657,9 +519,24 @@ $(document).ready(function() {
 			indexAxis: 'y',
 	    scales: {
 	      	y: {
-	        	beginAtZero: true	
+	        	beginAtZero: true,
+	        	ticks: {
+	                color: '#ececec' // X축 텍스트 색상
+	              }
+	      	},
+	      	x: {
+	      		ticks: {
+	      	        color: '#ececec' // X축 텍스트 색상
+	      	    }
 	      	}
-	    	}
+	    },
+	    plugins: {
+      	    legend: {
+      	      	labels: {
+      	        	color: '#ececec' // 범례 항목 글자 색
+      	      	}
+      	    }
+      	}
 	  	}
 	});
 	
@@ -671,10 +548,23 @@ $(document).ready(function() {
 		  totalChart.update();
 	}
 	
-	$('.explain-button').on('click',function(){
-		$('#modelExplainBox').slideToggle(200);
+	$('.explain-button').on('click', function (e) {
+	    e.stopPropagation();                 // ← 문서 클릭 이벤트로 전파되지 않게
+	    $('#modelExplainBox').slideToggle(200);
 	});
 
+	// ② 박스 안을 눌러도 닫히지 않도록 전파 차단
+	$('#modelExplainBox').on('click', function (e) {
+	    e.stopPropagation();
+	});
+
+	// ③ 문서 아무 곳이나 클릭했을 때 박스가 열려 있으면 닫기
+	$(document).on('click', function (e) {
+	    // 클릭된 요소가 explain‑box나 버튼 계통이 아니면 → 닫기
+	    if (!$(e.target).closest('#modelExplainBox, .explain-button').length) {
+	        $('#modelExplainBox').slideUp(200);   // 이미 닫혀 있으면 무시
+	    }
+	});
 	
 });
 	

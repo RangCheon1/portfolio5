@@ -1,0 +1,185 @@
+@charset "UTF-8";
+/*body=배경색, .map,.chart,.down=div색*/
+body {
+	background-color: rgb(2,7,21);
+	margin:0px;
+	color:white;
+}
+.map,.chart,.down{
+	background-color:rgb(27,40,49);
+}
+
+div {
+	box-sizing: border-box;
+}
+.div-main-h2{
+	color:#ececec;
+}
+.fullwide{
+	padding-left:10%;
+	padding-top:3%;
+	width:100%;
+	height:100%;
+}
+.middle {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	border: 3px solid rgb(33,28,57);
+	border-radius: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	
+}
+
+.year-select-container {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 10;
+	padding: 5px;
+	padding-left: 395px;
+	border-radius: 4px;
+}
+.select{
+	border-radius:5px;
+	font-size:22px;
+	padding-left:3px;
+	height:28px;
+}
+.select2{
+	border-radius:5px;
+	font-size:14px;
+	padding-left:3px;
+	height:19px;
+}
+.select-label{
+	font-size:22px;
+}
+.select-label2{
+	font-size:15px;
+}
+.explain-button{
+	background-color:#eeeeee;
+	border-radius:30px;
+	border:1px solid black;
+}
+.explain-button:active{
+	background-color:#aaaaaa;
+}
+#usageTitle {
+	display: inline-block;
+}
+#totalTitle{
+	display: inline-block;
+	margin-bottom:0px;
+}
+
+#selectBox {
+	display: inline-block;
+	padding-left: 240px;
+}
+
+.middle.map {
+	position: relative;
+	padding-left: 70px;
+}
+
+.map {
+
+	margin-left: 60px;
+	height: 850px;
+	width: 33%;
+	min-width:600px;
+}
+
+.chart {
+
+	height: 520px;
+	min-width: 800px;
+	width: 45%;
+}
+.up{
+	display: inline-block;
+	min-width: 800px;
+	width: 45%;
+	margin-left:10px;
+}
+.down{
+
+	min-width: 800px;
+	width: 45%;
+	height: 315px;
+	margin-top:15px;
+}
+.svg-map, .oversvg {
+	position: absolute;
+	padding-left: 45px;
+}
+#t-text-container{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	padding-left:180px;
+	width:763px;
+}
+.t-text{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	height:80px;
+	text-align:center;
+	width:150px;
+}
+.tt1{
+
+}
+.tt2{
+	margin-left:170px;
+}
+#totalUse{
+	color:rgb(75, 192, 192);
+}
+#totalPre{
+	color:rgb(255, 99, 132);
+}
+.t-h2{
+	margin-top:10px;
+	margin-bottom:0px;
+	font-size:30px;
+}
+#totalChart{
+	margin-top:0px;
+}
+.svg-map {
+	z-index: 1;
+	top: 0;
+	left: 0;
+	width: 600px;
+	height: 800px;
+}
+
+.oversvg {
+	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
+	top: 153;
+	left: 3;
+	pointer-events: none; /* 클릭은 SVG가 받도록 */
+	width: 600px;
+	height: 650px;
+}
+.annotation{
+	color:#dfdfdf;
+	font-size:12px;
+}
+.explain-box{
+	position:fixed;
+    margin-top:6px;
+    padding:12px 14px;
+    border:1px solid #888;
+    border-radius:8px;
+    background:#fefefe;
+    font-size:14px;
+    line-height:1.4;
+    width:414px;
+    box-shadow:2px 2px 4px rgba(0,0,0,0.7);
+}
