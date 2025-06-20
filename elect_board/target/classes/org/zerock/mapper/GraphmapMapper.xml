@@ -5,12 +5,19 @@
   
  <mapper namespace="org.zerock.mapper.GraphmapMapper">
 	<select id="view" resultType="org.zerock.domain.GraphmapVO">
-		select * from elect_usage 
+		select * from elect_usage ORDER BY year DESC, region ASC
 	</select>
 	<select id="viewByYearAndRegion" resultType="org.zerock.domain.GraphmapVO">
   SELECT *
   FROM   elect_usage
   WHERE  year   = #{year}
     AND  region = #{region}
+</select>
+
+<select id="findTotalUsageByYear" parameterType="string" resultType="map">
+  SELECT region,
+         (month1 + month2 + month3 + month4 + month5 + month6 + month7 + month8 + month9 + month10 + month11 + month12) AS totalUsage
+  FROM elect_usage
+  WHERE year = #{year}
 </select>
 </mapper>

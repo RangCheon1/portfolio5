@@ -1,6 +1,7 @@
 package org.zerock.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -12,6 +13,7 @@ public interface GraphmapMapper {
     List<GraphmapVO> view();
 
     
-    GraphmapVO viewByYearAndRegion(@Param("year") int year, @Param("region") String region);
+    GraphmapVO viewByYearAndRegion(@Param("year") double year, @Param("region") String region);
     
+    List<Map<String, Object>> findTotalUsageByYear(String year);
 }

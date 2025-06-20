@@ -153,3 +153,326 @@ body{background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118))}
 	
 	margin:7px;
 }
+
+/* 여기부터 home css 병합 */
+
+body {
+	z-index:0;
+	overflow: hidden; /*스크롤 막는 거*/
+}
+header{
+    display: flex;
+    position: fixed;
+   	right: 0;
+    top: 0;
+    z-index: 1000;
+    height: 100vh;
+    width:13vw;
+    background: linear-gradient(to bottom, rgb(93, 93, 115), rgb(149, 149, 182));
+
+
+}
+.header-table{
+height:300px;
+width:11vw;
+margin:0 auto;
+}
+.current_class{
+    color:orange;
+    font-weight: bold;
+}
+
+.navi{
+    cursor: default;
+	margin:auto;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+text-align: center;          /* 텍스트 가운데 정렬 */
+}
+a{
+text-decoration:none;
+}
+a:hover{
+text-decoration:none;
+}
+a:visited{
+text-decoration:none;
+}
+a:active{
+text-decoration:none;
+}
+div {
+	box-sizing: border-box;
+}
+.pagediv{
+min-width: 100vw;
+min-height: 100vh;
+position: relative;
+display: inline-block;
+margin:0;
+}
+#two{
+border-bottom:2px solid darkblue;
+
+}
+#firstdiv{
+/* background-color:aquamarine; */
+}
+#seconddiv{
+/* background-color:wheat; */
+}
+#thirddiv{
+background-color:darkred;
+}
+/*body=배경색, .map,.chart,.down=div색*/
+body {
+	background-color: rgb(2,7,21);
+	margin:0px;
+	color:white;
+}
+.chart,.down{
+	background-color:rgb(27,40,49);
+}
+
+div {
+	box-sizing: border-box;
+}
+.div-main-h2{
+	color:#ececec;
+}
+.fullwide{
+	padding-left:0;
+	padding-top:30px;
+	width:88vw;
+	height:98vh;
+	background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118));
+}
+.middle {
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	
+	border-radius: 5px;
+	padding-left: 15px;
+	padding-right: 15px;
+	
+}
+
+/* .year-select-container {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	z-index: 10;
+	padding: 5px;
+	padding-top:20px;
+	padding-left: 295px;
+	border-radius: 4px;
+} */
+.select{
+	border-radius:5px;
+	font-size:22px;
+	padding-left:3px;
+	height:28px;
+}
+.select2{
+	border-radius:5px;
+	font-size:14px;
+	padding-left:3px;
+	height:19px;
+}
+.select-label{
+	font-size:22px;
+}
+.select-label2{
+	font-size:15px;
+}
+.explain-button{
+	background-color:#eeeeee;
+	border-radius:30px;
+	border:1px solid black;
+}
+.explain-button:active{
+	background-color:#aaaaaa;
+}
+#usageTitle {
+	display: inline-block;
+}
+#totalTitle{
+	display: inline-block;
+	margin-bottom:0px;
+}
+
+#selectBox {
+	display: inline-block;
+	padding-left: 165px;
+}
+
+.middle.map {
+	position: relative;
+	padding-left: 0px;
+}
+
+.map {
+	margin-left: 25px;
+	height: 700px;
+	width:460px;
+}
+.left{
+/* background-color:cyan; */
+background-color:rgb(27,40,49);
+height:900px;
+width:445px;
+margin-left:30px;
+padding:0px;
+}
+.left-up{
+height:445px;
+width:443px;
+/* background-color:darkred; */
+margin-top:40px;
+z-index:200;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+text-align: center;          /* 텍스트 가운데 정렬 */
+}
+.left-down{
+margin-top:30px;
+height:395px;
+width:443px;
+/* background-color:darkblue; */
+z-index:300;
+}
+.chart {
+
+	height: 550px;
+	width: 655px;
+}
+.up{
+	display: inline-block;
+	width: 655px;
+	height:900px;	
+	margin-left:25px;
+}
+.down{
+
+	width: 655px;
+	height: 320px;
+	margin-top:30px;
+}
+
+#t-text-container{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	padding-left:105px;
+	width:763px;
+}
+.t-text{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	height:80px;
+	text-align:center;
+	width:150px;
+}
+.tt1{
+
+}
+.tt2{
+	margin-left:130px;
+}
+#totalUse{
+	color:rgb(75, 192, 192);
+}
+#totalPre{
+	color:rgb(255, 99, 132);
+}
+.t-h2{
+	margin-top:10px;
+	margin-bottom:0px;
+	font-size:30px;
+}
+#totalChart{
+	margin-top:0px;
+}
+.svg-map {
+	position: absolute;
+	padding:0;
+	z-index: 1;
+	top: 0;
+	left: 0;
+	padding-left:53px;
+	padding-top:40px;
+	width: 1000px;
+	height: 1440px;
+}
+
+.oversvg {
+	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
+	padding-left:0px;
+	padding-top:91px; /*글자 위치 조정*/
+	position: sticky;
+	left:0px;
+	pointer-events: none; /* 클릭은 SVG가 받도록 */
+	width: 700px;
+	height: 714px;
+}
+.annotation{
+	color:#dfdfdf;
+	font-size:12px;
+}
+.explain-box{
+	position:absolute;
+    margin-top:5px;
+    right: 0px;
+    padding:12px 14px;
+    border:1px solid #888;
+    border-radius:8px;
+    background:#fefefe;
+    font-size:14px;
+    line-height:1.4;
+    width:414px;
+    box-shadow:2px 2px 4px rgba(0,0,0,0.7);
+}
+#usageChart{
+margin-top:35px;
+}
+.donut-title{
+position:absolute;
+margin:0;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+}
+.year-buttons{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+}
+#year-table{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+}
+.year-btn{
+align-items: center;
+width:100px;
+height:56px;
+margin:3px;
+background-color:rgb(33,28,57);
+color:white;
+font-size:21px;
+font-weight:bold;
+border-radius:5px;
+}
+option{
+color:black;
+}

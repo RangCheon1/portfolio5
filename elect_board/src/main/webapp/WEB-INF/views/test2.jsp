@@ -8,20 +8,25 @@
 <title>스크롤 페이징 템플릿</title>
 <style>
 body {
-	background-color: #dddddd;
-	margin:0px;
 	z-index:0;
 	overflow: hidden; /*스크롤 숨김*/
 }
 header{
     display: flex;
     position: fixed;
+   	right: 0;
     top: 0;
     z-index: 1000;
-    height: 52px;
-    width:100vw;
-    background-color:aquamarine;
-    justify-content:center;
+    height: 100vh;
+    width:13vw;
+    background: linear-gradient(to bottom, rgb(93, 93, 115), rgb(149, 149, 182));
+
+
+}
+.header-table{
+height:300px;
+width:11vw;
+margin:0 auto;
 }
 .current_class{
     color:orange;
@@ -30,7 +35,22 @@ header{
 
 .navi{
     cursor: default;
-    padding:0 30px;
+	margin:auto;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+text-align: center;          /* 텍스트 가운데 정렬 */
+}
+a{
+text-decoration:none;
+}
+a:hover{
+text-decoration:none;
+}
+a:visited{
+text-decoration:none;
+}
+a:active{
+text-decoration:none;
 }
 div {
 	box-sizing: border-box;
@@ -41,6 +61,10 @@ min-height: 100vh;
 position: relative;
 display: inline-block;
 margin:0;
+}
+#two{
+border-bottom:2px solid darkblue;
+
 }
 #firstdiv{
 /* background-color:aquamarine; */
@@ -68,10 +92,11 @@ div {
 	color:#ececec;
 }
 .fullwide{
-	padding-left:10%;
-	padding-top:3%;
-	width:100%;
-	height:100%;
+	padding-left:0;
+	padding-top:30px;
+	width:88vw;
+	height:98vh;
+	background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118));
 }
 .middle {
 	position: relative;
@@ -90,7 +115,8 @@ div {
 	left: 10px;
 	z-index: 10;
 	padding: 5px;
-	padding-left: 395px;
+	padding-top:20px;
+	padding-left: 295px;
 	border-radius: 4px;
 }
 .select{
@@ -134,45 +160,62 @@ div {
 
 .middle.map {
 	position: relative;
-	padding-left: 70px;
+	padding-left: 0px;
 }
 
 .map {
-
-	margin-left: 60px;
-	height: 850px;
-	width: 33%;
-	min-width:600px;
+	margin-left: 25px;
+	height: 870px;
+	width:460px;
 }
-
+.left{
+/* background-color:cyan; */
+background-color:rgb(27,40,49);
+height:870px;
+width:445px;
+margin-left:30px;
+padding:0px;
+}
+.left-up{
+height:445px;
+width:443px;
+/* background-color:darkred; */
+z-index:200;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+text-align: center;          /* 텍스트 가운데 정렬 */
+}
+.left-down{
+margin-top:30px;
+height:395px;
+width:443px;
+/* background-color:darkblue; */
+z-index:300;
+}
 .chart {
 
 	height: 520px;
-	min-width: 800px;
-	width: 45%;
+	width: 655px;
 }
 .up{
 	display: inline-block;
-	min-width: 800px;
-	width: 45%;
-	margin-left:10px;
+	width: 655px;
+	margin-left:25px;
 }
 .down{
 
-	min-width: 800px;
-	width: 45%;
-	height: 315px;
-	margin-top:15px;
+	width: 655px;
+	height: 320px;
+	margin-top:30px;
 }
-.svg-map, .oversvg {
-	position: absolute;
-	padding-left: 45px;
-}
+
 #t-text-container{
 	position: relative;
 	display: inline-block;
 	vertical-align: top;
-	padding-left:180px;
+	padding-left:105px;
 	width:763px;
 }
 .t-text{
@@ -187,7 +230,7 @@ div {
 
 }
 .tt2{
-	margin-left:170px;
+	margin-left:130px;
 }
 #totalUse{
 	color:rgb(75, 192, 192);
@@ -204,22 +247,25 @@ div {
 	margin-top:0px;
 }
 .svg-map {
+	position: absolute;
+	padding-left: 35px;
 	z-index: 1;
 	top: 0;
 	left: 0;
-	width: 600px;
-	height: 800px;
+	width: 570px;
+	height: 740px;
+	padding-top:10px;
 }
 
 .oversvg {
 	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
-	padding-left:0px;
-	padding-top:155px;
+	padding-left:63px;
+	padding-top:157px; /*글자 위치 조정*/
 	position: sticky;
 	left:0px;
 	pointer-events: none; /* 클릭은 SVG가 받도록 */
-	width: 600px;
-	height: 650px;
+	width: 570px;
+	height: 590px;
 }
 .annotation{
 	color:#dfdfdf;
@@ -238,49 +284,98 @@ div {
     width:414px;
     box-shadow:2px 2px 4px rgba(0,0,0,0.7);
 }
+#usageChart{
+margin-top:35px;
+}
+.donut-title{
+position:absolute;
+margin:0;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+}
+.year-buttons{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+}
+#year-table{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+}
+.year-btn{
+align-items: center;
+width:100px;
+height:56px;
+margin:3px;
+background-color:rgb(33,28,57);
+color:white;
+font-size:21px;
+font-weight:bold;
+border-radius:5px;
+}
 </style>
 
 </head>
 <body>
 <header>
-        <table>
+        <table class='header-table'>
         <tr>
-            <td><span id="one" class="current_class navi">firstdiv</span></td>
-            <td><span id="two" class="navi">seconddiv</span></td>
-            <td><span id="three" class="navi">thirddiv</span></td> 
+            <td id="one"><p class="current_class navi">firstdiv</p></td>
+        </tr>
+        <tr>
+        	<td id="two"><p class="navi">seconddiv</p></td>
+        </tr>
+        <tr>
+        	<td id="three"><p class="navi"><a href='/usageChart' >thirddiv</a></p></td>
         </tr>
         </table>
-   </header>
+</header>
 <main>
 <div id='firstdiv' class='pagediv'>
 	<div class="fullwide">
-		<div class="middle map">
-			<div class="year-select-container">
-				<label for="yearSelect" class='select-label'>연도 선택: </label> <select id="yearSelect" class='select'>
-					<option value="2014" <c:if test="${year == 2014}">selected</c:if>>2014</option>
-					<option value="2015" <c:if test="${year == 2015}">selected</c:if>>2015</option>
-					<option value="2016" <c:if test="${year == 2016}">selected</c:if>>2016</option>
-					<option value="2017" <c:if test="${year == 2017}">selected</c:if>>2017</option>
-					<option value="2018" <c:if test="${year == 2018}">selected</c:if>>2018</option>
-					<option value="2019" <c:if test="${year == 2019}">selected</c:if>>2019</option>
-					<option value="2020" <c:if test="${year == 2020}">selected</c:if>>2020</option>
-					<option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
-					<option value="2022" <c:if test="${year == 2022}">selected</c:if>>2022</option>
-					<option value="2023" <c:if test="${year == 2023}">selected</c:if>>2023</option>
-					<option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
-					<option value="2025" <c:if test="${year == 2025}">selected</c:if>>2025</option>
-					<option value="2026" <c:if test="${year == 2026}">selected</c:if>>2026</option>
-					<option value="2027" <c:if test="${year == 2027}">selected</c:if>>2027</option>
-					<option value="2028" <c:if test="${year == 2028}">selected</c:if>>2028</option>
-					<option value="2029" <c:if test="${year == 2029}">selected</c:if>>2029</option>
-				</select>
+		<div class='middle left'>
+			<div class='left-up'>
+				<p class="donut-title">도시별 총 전력<br>실제 사용량 비교</p>
+  				<canvas id="usageDonutChart" width="375" height="375"></canvas>
 			</div>
-			<object class='svg-map' type="image/svg+xml"
-				data="${pageContext.request.contextPath}/resources/static/svg/southKoreaLow.svg"
-				width="600" height="800"> 브라우저가 SVG를 지원하지 않습니다. </object>
-			<img
-				src="${pageContext.request.contextPath}/resources/static/southKoreaLow2.png"
-				class="oversvg">
+			<div class='left-down'>
+			<div id="yearButtons" class="year-buttons">
+			<table id='year-table'>
+			<tr>
+			<td><button type="button" data-year="2015" class="year-btn">2015</button></td>
+			<td><button type="button" data-year="2016" class="year-btn">2016</button></td>
+			<td><button type="button" data-year="2017" class="year-btn">2017</button></td>
+			<td><button type="button" data-year="2018" class="year-btn">2018</button></td>
+			</tr>
+			<tr>
+			<td><button type="button" data-year="2019" class="year-btn">2019</button></td>
+			<td><button type="button" data-year="2020" class="year-btn">2020</button></td>
+			<td><button type="button" data-year="2021" class="year-btn">2021</button></td>
+			<td><button type="button" data-year="2022" class="year-btn">2022</button></td>
+			</tr>
+			<tr>
+			<td><button type="button" data-year="2023" class="year-btn">2023</button></td>
+			<td><button type="button" data-year="2024" class="year-btn">2024</button></td>
+			<td><button type="button" data-year="2025" class="year-btn">2025</button></td>
+			<td><button type="button" data-year="2026" class="year-btn">2026</button></td>
+			</tr>
+			<tr>
+			<td><button type="button" data-year="2027" class="year-btn">2027</button></td>
+			<td><button type="button" data-year="2028" class="year-btn">2028</button></td>
+			<td><button type="button" data-year="2029" class="year-btn">2029</button></td>
+			<td><button type="button" data-year="2030" class="year-btn">2030</button></td>
+			</tr>
+			</table>
+			</div>
+			</div>
 		</div>
 		<div class='up'>
 		<div class="middle chart">
@@ -316,11 +411,11 @@ div {
     				• <b>장기 모델</b> : 시·도별 월별 전력 사용량으로 장기적인<br>추세를 예측합니다. 예상 정확도는 단기 모델에 비해 낮습니다.<br>
 				</div>
 			</div>
-			<canvas id="usageChart" width="600" height="300"></canvas>
+			<canvas id="usageChart" width="600" height="350"></canvas>
 			
 		</div>
 		<div class='middle down'>
-		<h2 id='totalTitle' class='div-main-h2'>2014년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
+		<h2 id='totalTitle' class='div-main-h2'>2015년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
 			<div id='t-text-container'>
 				<div class='t-text tt1'>
 				<h2 id='totalUse' class='t-h2'></h2>
@@ -334,19 +429,51 @@ div {
 		<canvas id="totalChart" width="600" height="120"></canvas>
 		</div>
 		</div>
+		<div class="middle map">
+			<div class="year-select-container">
+				<label for="yearSelect" class='select-label'>연도 선택: </label> <select id="yearSelect" class='select'>
+					<option value="2015" <c:if test="${year == null || year == 2015}">selected</c:if>>2015</option>
+					<option value="2016" <c:if test="${year == 2016}">selected</c:if>>2016</option>
+					<option value="2017" <c:if test="${year == 2017}">selected</c:if>>2017</option>
+					<option value="2018" <c:if test="${year == 2018}">selected</c:if>>2018</option>
+					<option value="2019" <c:if test="${year == 2019}">selected</c:if>>2019</option>
+					<option value="2020" <c:if test="${year == 2020}">selected</c:if>>2020</option>
+					<option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
+					<option value="2022" <c:if test="${year == 2022}">selected</c:if>>2022</option>
+					<option value="2023" <c:if test="${year == 2023}">selected</c:if>>2023</option>
+					<option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
+					<option value="2025" <c:if test="${year == 2025}">selected</c:if>>2025</option>
+					<option value="2026" <c:if test="${year == 2026}">selected</c:if>>2026</option>
+					<option value="2027" <c:if test="${year == 2027}">selected</c:if>>2027</option>
+					<option value="2028" <c:if test="${year == 2028}">selected</c:if>>2028</option>
+					<option value="2029" <c:if test="${year == 2029}">selected</c:if>>2029</option>
+					<option value="2030" <c:if test="${year == 2030}">selected</c:if>>2030</option>
+				</select>
+			</div>
+			<object class='svg-map' type="image/svg+xml"
+				data="${pageContext.request.contextPath}/resources/static/svg/southKoreaLow3.svg"> 브라우저가 SVG를 지원하지 않습니다. </object>
+			<img
+				src="${pageContext.request.contextPath}/resources/static/southKoreaLow2.png"
+				class="oversvg">
+		</div>
 	</div>
 </div>
 <div id='seconddiv' class='pagediv'>
 
 </div>
-<div id='thirddiv' class='pagediv'>
+<!-- <div id='thirddiv' class='pagediv'>
 
-</div>
+</div> -->
 </main>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="//code.jquery.com/jquery-migrate-3.5.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script>
+  /* 플러그인 한 번만 등록 */
+  Chart.register(ChartDataLabels);
+</script>
 <script>
 $(function () {
 	  /* ----------------------------------------
@@ -390,10 +517,11 @@ $(function () {
 	  ---------------------------------------- */
 	  $('#one').on('click',  () => go(1));
 	  $('#two').on('click',  () => go(2));
-	  $('#three').on('click',() => go(3));
+	  /* $('#three').on('click',() => go(3)); */
 	});
 </script>
 <script>
+
 $(document).ready(function() {
 const cityCodeMap = {
 	"강원도": 0,
@@ -434,14 +562,35 @@ const regionMap = {
     "Jeju": "제주도",
     "Sejong": "세종"
 };
+
+//도넛 그래프 색상
+const fixedColors = [
+    '#FF6384', // 강원도
+    '#36A2EB', // 경기도
+    '#FFCE56', // 경상남도
+    '#4BC0C0', // 경상북도
+    '#9966FF', // 광주
+    '#FF9F40', // 대구
+    '#C9CBCF', // 대전
+    '#8D6E63', // 부산
+    '#66BB6A', // 서울
+    '#D4E157', // 세종
+    '#BA68C8', // 울산
+    '#7986CB', // 인천
+    '#F06292', // 전라남도
+    '#4DD0E1', // 전라북도
+    '#AED581', // 제주도
+    '#FFD54F', // 충청남도
+    '#90A4AE' // 충청북도
+];	
+
 const regionMapReverse = {};
 for (const eng in regionMap) {
     regionMapReverse[regionMap[eng]] = eng;
 }
 
 const base = '${pageContext.request.contextPath}';
-
-let year = '<c:out value="${year != null ? year : '2023'}"/>';
+let year = '<c:out value="${year != null ? year : '2015'}"/>';
 let currentRegionKor = '<c:out value="${region != null ? region : '서울'}"/>';
 let currentRegionEng = regionMapReverse[currentRegionKor];
 
@@ -449,9 +598,31 @@ const ctx = document.getElementById('usageChart').getContext('2d');
 let usageData = new Array(12).fill(null);
 let predictionData = new Array(12).fill(null);
 
+$('#yearButtons').on('click', '.year-btn', function() {
+    const selectedYear = $(this).data('year');
+
+    if (year === selectedYear) return; // 이미 선택된 버튼이면 무시
+
+    year = selectedYear;
+
+    // 버튼 선택 스타일 변경
+    $('.year-btn').removeClass('selected');
+    $(this).addClass('selected');
+
+    // UI 타이틀 변경
+    $('#usageTitle').text(year + '년 ' + currentRegionKor + " 월별 전력 사용량 그래프");
+    $('#totalTitle').text(year + '년 ' + currentRegionKor + " 총 전력 사용량");
+
+    // 차트 및 도넛 갱신 호출
+    refreshAll();
+    donut(year);
+  });
+
 // 차트 초기화: 두 개 데이터셋 (실제, 예측)
 const chart = new Chart(ctx, {
     
+	
+	
     data: {
     	labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
       	datasets: [
@@ -464,6 +635,9 @@ const chart = new Chart(ctx, {
           fill: false,
           tension: 0.1,
           yAxisID: 'y',
+          datalabels: {
+              display: false
+            }
         },
         {
           type: 'line',
@@ -474,6 +648,9 @@ const chart = new Chart(ctx, {
           fill: false,
           tension: 0.1,
           yAxisID: 'y',
+          datalabels: {
+              display: false
+          }
         }
         ]
     },
@@ -546,7 +723,7 @@ function fetchPredictionData(year, regionKor, predictionType) {
     		url: '/getPrevUsage',
     		method: 'GET',
     		dataType: 'json',
-    		data: { region: regionKor, year: year, month: month }
+    		data: { region: regionKor, year: year-1, month: month }
   		}).then(prevUsage => {
     		const usage = prevUsage.usage;
     	if (!usage || usage === 0) {
@@ -668,6 +845,7 @@ $('#yearSelect').on('change', function() {
 $('#usageTitle').text(year+'년 '+currentRegionKor+" 월별 전력 사용량 그래프")
 $('#totalTitle').text(year+'년 '+currentRegionKor+" 총 전력 사용량")
     refreshAll();
+	donut(year);
 });
 
 // 예측 타입 변경
@@ -826,12 +1004,16 @@ totalChart = new Chart(totalCtx, {
       	    }
       	}
     },
+    
     plugins: {
   	    legend: {
   	      	labels: {
   	        	color: '#ececec' // 범례 항목 글자 색
   	      	}
-  	    }
+  	    },
+  	  datalabels: {
+          display: false
+        }
   	}
   	}
 });
@@ -861,10 +1043,77 @@ $(document).on('click', function (e) {
         $('#modelExplainBox').slideUp(200);   // 이미 닫혀 있으면 무시
     }
 });
+let donutChart = null;   // 전역 핸들
+
+function donut(selectedYear) {
+  const apiUrl = '/api/usage/total/' + selectedYear;
+
+  $.getJSON(apiUrl).done(data => {
+
+    /* 데이터·색상 준비 */
+    const labels = data.map(d => d.region);
+    const usage  = data.map(d => Number(d.totalUsage) || 0);
+
+    /* ── 이미 차트가 있으면 업데이트만 ─────────────────── */
+    if (donutChart) {
+      donutChart.data.labels                    = labels;
+      donutChart.data.datasets[0].data          = usage;
+      donutChart.data.datasets[0].backgroundColor = fixedColors.slice(0, labels.length);
+      donutChart.data.datasets[0].label         =
+        `${selectedYear}년도 지역별 총 사용량`;
+        donutChart.options.plugins.datalabels.formatter = function(value, context) {
+            return context.chart.data.labels[context.dataIndex]; // ✅ 항상 지역명
+          };
+      donutChart.update();
+      return;
+    }
+
+    /* ── 처음 한 번만 차트 생성 ─────────────────────────── */
+    const ctx = document.getElementById('usageDonutChart').getContext('2d');
+    donutChart = new Chart(ctx, {
+    	  type: 'doughnut',
+    	  data: {
+    	    labels,
+    	    datasets: [{
+    	      label: `${selectedYear}년도 지역별 총 사용량`,
+    	      data: usage,
+    	      backgroundColor: fixedColors.slice(0, labels.length),
+    	      borderWidth: 1
+    	    }]
+    	  },
+    	  options: {
+    	    responsive: false,
+    	    plugins: {
+    	      legend: { display: false },
+    	      tooltip: {
+    	        callbacks: {
+    	          label: function(context) {
+    	            const value = context.parsed;
+    	            return value.toLocaleString() + ' GWh';
+    	          }
+    	        }
+    	      },
+    	      datalabels: {
+    	        color: 'rgb(33,28,57)',
+    	        font: { weight: 'bold', size: 12 },
+    	        formatter: function(value, context) {
+    	          return context.chart.data.labels[context.dataIndex]; // ✅ 지역명 표시
+    	        },
+    	        anchor: 'center',
+    	        align : 'center'
+    	      }
+    	    }
+    	  }
+    	});
+  }).fail(e => {
+    alert('도넛 데이터를 불러오지 못했습니다: ' + e.statusText);
+  });
+}
+
+donut(year);
+
 
 });
-	
-	
 </script>
 </body>
 </html>

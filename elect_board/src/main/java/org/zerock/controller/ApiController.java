@@ -26,7 +26,7 @@ public class ApiController {
 
     @GetMapping(value = "/usage/{year}", produces = "application/json")
     public Map<String, Object> getUsageByRegion(
-            @PathVariable("year") int year,
+            @PathVariable("year") double year,
             @RequestParam("region") String region) {
 
         GraphmapVO data = graphmapMapper.viewByYearAndRegion(year, region);
@@ -42,5 +42,11 @@ public class ApiController {
         ));
 
         return result;
+    }
+    
+    
+    @GetMapping(value = "/usage/total/{year}", produces = "application/json")
+    public List<Map<String, Object>> getTotalUsageByYear(@PathVariable("year") String year) {
+        return graphmapMapper.findTotalUsageByYear(year);
     }
 }
