@@ -149,3 +149,7 @@ body{background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118))}
 	height: 100px;
 	margin-top: 20px;
 }
+#nowMonthBox1 h2, #nowMonthBox2 h2{
+	
+	margin:7px;
+}
