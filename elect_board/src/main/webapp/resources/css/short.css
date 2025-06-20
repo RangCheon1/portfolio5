@@ -125,6 +125,7 @@ body{background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118))}
 	display: flex;
     flex-wrap: wrap;
     overflow: hidden;
+    height: 350px;
 }
 
 #chart4Box {
