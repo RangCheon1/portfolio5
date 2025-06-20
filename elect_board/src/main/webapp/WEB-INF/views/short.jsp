@@ -14,7 +14,6 @@
 	    let year = today.getFullYear();
 	    let month = today.getMonth() + 1;
 	    let nowMonthAll = 0.00;
-	    $("#month").html("<h2>"+month+"월 예상<br>전력 사용량</h2>");
 	    let prevAllUsage; // 전년도 1~12월 값
 	    let yearAllUsage; // 올해 1~12월 값
 	    let month4Years // 이번달 4년치 값
@@ -138,7 +137,7 @@
 		}
 	 	
 	 	// 메뉴 클릭 이벤트
-		$(".menu").not("#month").on("click", async function() {
+		$(".menu").on("click", async function() {
 		    let $element = $(this);
 		    let prevAllUsage;
 		    let yearAllUsage;
@@ -220,10 +219,10 @@
 			                	prevAllUsage[4], prevAllUsage[5], prevAllUsage[6], prevAllUsage[7],
 			                	prevAllUsage[8], prevAllUsage[9], prevAllUsage[10], prevAllUsage[11]],
 			                backgroundColor: [
-			                    'rgb(88, 121, 136)'
+			                	'rgb(58, 91, 106)'
 			                ],
 			                borderColor: [
-			                    'rgb(88, 121, 136)'
+			                	'rgb(58, 91, 106)'
 			                ],
 			                borderWidth: 1
 		                },
@@ -492,7 +491,6 @@
 		<div class="menu" id="gyeongnam" data-citycode="2"><h2>경상남도</h2><p>0GWh</p></div>
 		<div class="menu" id="gyeongbuk" data-citycode="3"><h2>경상북도</h2><p>0GWh</p></div>
 		<div class="menu" id="chungnam" data-citycode="15"><h2>충청남도</h2><p>0GWh</p></div>
-		<div class="menu" id="month"></div>
 		<div class="menu" id="chungbuk" data-citycode="16"><h2>충청북도</h2><p>0GWh</p></div>
 		<div class="menu" id="jeonnam" data-citycode="12"><h2>전라남도</h2><p>0GWh</p></div>
 		<div class="menu" id="jeonbuk" data-citycode="13"><h2>전라북도</h2><p>0GWh</p></div>
