@@ -22,6 +22,7 @@
 	    let Chart2 = null; // 차트2
 	    let Chart3 = null; // 차트3
 	    let Chart4 = null; // 차트4
+	    let Chart5 = null; // 차트5
 	    let region = "서울";
 	    
 		
@@ -219,10 +220,10 @@
 			                	prevAllUsage[4], prevAllUsage[5], prevAllUsage[6], prevAllUsage[7],
 			                	prevAllUsage[8], prevAllUsage[9], prevAllUsage[10], prevAllUsage[11]],
 			                backgroundColor: [
-			                    'rgb(255, 99, 132)'
+			                    'rgb(88, 121, 136)'
 			                ],
 			                borderColor: [
-			                    'rgb(255, 99, 132)'
+			                    'rgb(88, 121, 136)'
 			                ],
 			                borderWidth: 1
 		                },
@@ -232,10 +233,10 @@
 			                	yearAllUsage[4], yearAllUsage[5], yearAllUsage[6], yearAllUsage[7],
 			                	yearAllUsage[8], yearAllUsage[9], yearAllUsage[10], yearAllUsage[11]],
 			                backgroundColor: [
-			                    'rgb(200, 99, 132)'
+			                    'rgb(178, 211, 226)'
 			                ],
 			                borderColor: [
-			                    'rgb(200, 99, 132)'
+			                    'rgb(178, 211, 226)'
 			                ],
 			                borderWidth: 1
 		                }
@@ -243,8 +244,16 @@
 		        },
 		        options: {
 		            scales: {
+		                x: {
+		                    ticks: {
+		                        color: 'white'  // x축 라벨 텍스트 색상 (예: 파란색)
+		                    }
+		                },
 		                y: {
-		                    beginAtZero: true
+		                    beginAtZero: true,
+		                    ticks: {
+		                        color: 'white'  // y축 눈금 텍스트 색상 (예: 주황색)
+		                    }
 		                }
 		            }
 		        }
@@ -263,18 +272,42 @@
 		                label: "전력 사용량",
 		                data: sMonthData,
 		                backgroundColor: [
-		                    'rgb(255, 99, 132)'
+		                	'rgb(28, 61, 76)',
+		                	'rgb(58, 91, 106)',
+		                	'rgb(88, 121, 136)',
+		                	'rgb(118, 151, 166)',
+		                	'rgb(148, 181, 196)',
+		                	'rgb(178, 211, 226)',
+		                    
 		                ],
 		                borderColor: [
-		                    'rgb(255, 99, 132)'
+		                	'rgb(28, 61, 76)',
+		                	'rgb(58, 91, 106)',
+		                	'rgb(88, 121, 136)',
+		                	'rgb(118, 151, 166)',
+		                	'rgb(148, 181, 196)',
+		                	'rgb(178, 211, 226)',
 		                ],
 		                borderWidth: 1
 		            }]
 		        },
 		        options: {
+		    		plugins: {
+		    			legend: {
+		                    display: false   // 범례
+		                }
+		    		},
 		            scales: {
+		                x: {
+		                    ticks: {
+		                        color: 'white'  // x축 라벨 텍스트 색상 (예: 파란색)
+		                    }
+		                },
 		                y: {
-		                    beginAtZero: true
+		                    beginAtZero: true,
+		                    ticks: {
+		                        color: 'white'  // y축 눈금 텍스트 색상 (예: 주황색)
+		                    }
 		                }
 		            }
 		        }
@@ -294,18 +327,39 @@
 		                data: [month4Years[0], month4Years[1], month4Years[2], month4Years[3],
 		                	yearAllUsage[month-1]],
 		                backgroundColor: [
-		                    'rgb(255, 99, 132)'
+		                	'rgb(58, 91, 106)',
+		                	'rgb(88, 121, 136)',
+		                	'rgb(118, 151, 166)',
+		                	'rgb(148, 181, 196)',
+		                	'rgb(178, 211, 226)',
 		                ],
 		                borderColor: [
-		                    'rgb(255, 99, 132)'
+		                	'rgb(58, 91, 106)',
+		                	'rgb(88, 121, 136)',
+		                	'rgb(118, 151, 166)',
+		                	'rgb(148, 181, 196)',
+		                	'rgb(178, 211, 226)',
 		                ],
 		                borderWidth: 1
 		            }]
 		        },
 		        options: {
+		    		plugins: {
+		    			legend: {
+		                    display: false   // 범례
+		                }
+		    		},
 		            scales: {
+		                x: {
+		                    ticks: {
+		                        color: 'white'  // x축 라벨 텍스트 색상 (예: 파란색)
+		                    }
+		                },
 		                y: {
-		                    beginAtZero: true
+		                    beginAtZero: true,
+		                    ticks: {
+		                        color: 'white'  // y축 눈금 텍스트 색상 (예: 주황색)
+		                    }
 		                }
 		            }
 		        }
@@ -313,7 +367,7 @@
 		    
 		    // 차트4 부분
 		    $("#mainH1").text($(this).find('h2').text()+" "+year+"년 전력 사용량 분석");
-		    $("#nowH21").text(month+"월 전력 사용량 예측");
+		    $("#nowH21").text(month+"월 사용량 예측");
 		    $("#nowH22").text(yearAllUsage[month-1]+" GWh");
 		    // 이번달 전력 사용량 평균값 구하기
 		    let usageRate = 0;
@@ -356,12 +410,49 @@
 		    Chart4 = new Chart(nowUsageChart, {
 		    	  type: 'doughnut',
 		    	    data: {
-		    	    	labels: [$(this).find('h2').text()+"전력 사용량", "전체 전력 사용량"],
+		    	    	labels: [$(this).find('h2').text()+" 전력 사용량", "전체 전력 사용량"],
 		    	      	datasets: [{
 			    	        data: [yearAllUsage[month-1], nowMonthAll],
 			    	        backgroundColor: [
-			    	          '#9DCEFF',
-			    	          '#F2F3F6'
+			    	        	'rgb(88, 121, 136)',
+			    	   			'rgb(178, 211, 226)'
+			    	        ],
+		    	        borderWidth: 0,
+		    	        scaleBeginAtZero: true,
+		    	      }
+		    	    ]
+		    	  },
+		    	  options: {
+		    		plugins: {
+		    			legend: {
+		                    display: false   // 범례
+		                },
+		    			centerText: true
+		    		}
+		    	},
+		   		plugins: [centerTextPlugin]
+		    });
+		    
+		    // 차트5
+		    // 다음달 전력 사용량 예측값 가져오기
+		    let nextUsage = await predictAndReturnCorrect($element, year, month + 1);
+		    
+		    $("#nowH23").text(month+1+"월 사용량 예측");
+		    $("#nowH24").text(yearAllUsage[month-1]+" GWh");
+			// 차트 지우기
+		    if (Chart5) {
+		        Chart5.destroy();
+		    }
+		    let nextUsageChart = $('#nextUsageChart')[0].getContext('2d');
+		    Chart5 = new Chart(nextUsageChart, {
+		    	  type: 'doughnut',
+		    	    data: {
+		    	    	labels: [$(this).find('h2').text()+" 전력 사용량", "전체 전력 사용량"],
+		    	      	datasets: [{
+			    	        data: [nextUsage, nowMonthAll],
+			    	        backgroundColor: [
+			    	        	'rgb(88, 121, 136)',
+				    	        'rgb(178, 211, 226)'
 			    	        ],
 		    	        borderWidth: 0,
 		    	        scaleBeginAtZero: true,
@@ -386,31 +477,7 @@
 </script>
 </head>
 <body>
-<div id=box>
-<div id=boardBox>
-	<div id="main">
-		<div id=mainLeft>
-			<div id="prevUsageBox">
-			<h2>전년도 대비 사용량</h2>
-			<canvas id="prevUsageChart" width="500" height="200"></canvas>
-			</div>
-			<div id="sMonthUsageBox">
-			<h2>최근 6개월 사용량</h2>
-			<canvas id="sMonthUsageChart" width="500" height="200"></canvas>
-			</div>
-		</div>
-		<div id="mainRight">
-			<div id="monthUsageBox">
-			<h1 id="mainH1">서울 2025년 전력 사용량 분석</h1>
-			<div id="chart4Box"><canvas id="nowUsageChart" width="200" height="200"></canvas></div>
-			<div id="nowMonthBox"><h2 id="nowH21">월 전력 사용량 예측</h2><h2 id="nowH22">0000.00 GWh</h2></div>
-			</div>
-			<div id="yearUsageBox">
-			<h2>최근 5년 6월 사용량</h2>
-			<canvas id="monthUsageChart" width="400" height="195"></canvas>
-			</div>
-		</div>
-	</div>
+<div id="main1">
 	<div id="menu">
 		<div class="menu" id="seoul" data-citycode="8"><h2>서울</h2><p>0GWh</p></div>
 		<div class="menu" id="busan" data-citycode="7"><h2>부산</h2><p>0GWh</p></div>
@@ -431,7 +498,29 @@
 		<div class="menu" id="jeonbuk" data-citycode="13"><h2>전라북도</h2><p>0GWh</p></div>
 		<div class="menu" id="gangwon" data-citycode="0"><h2>강원도</h2><p>0GWh</p></div>
 	</div>
-</div>
+	<div id="main">
+		<div id="prevUsageBox">
+			<h2>전년도 대비 사용량</h2>
+			<canvas id="prevUsageChart" width="870" height="380"></canvas>
+		</div>
+		<div id="monthUsageBox">
+			<h1 id="mainH1">서울 2025년 전력 사용량 분석</h1>
+			<div id="chartBox">
+				<div id="chart4Box"><canvas id="nowUsageChart" width="200" height="200"></canvas></div>
+				<div id="chart5Box"><canvas id="nextUsageChart" width="200" height="200"></canvas></div>
+				<div id="nowMonthBox1"><h2 id="nowH21">월 사용량 예측</h2><h2 id="nowH22">0000.00 GWh</h2></div>
+				<div id="nowMonthBox2"><h2 id="nowH23">월 사용량 예측</h2><h2 id="nowH24">0000.00 GWh</h2></div>
+			</div>
+		</div>
+		<div id="sMonthUsageBox">
+			<h2>최근 6개월 사용량</h2>
+			<canvas id="sMonthUsageChart" width="670" height="380"></canvas>
+		</div>
+		<div id="yearUsageBox">
+			<h2>최근 5년 6월 사용량</h2>
+			<canvas id="monthUsageChart" width="670" height="380"></canvas>
+		</div>
+	</div>
 </div>
 <h1 id="result"></h1>
 </body>
