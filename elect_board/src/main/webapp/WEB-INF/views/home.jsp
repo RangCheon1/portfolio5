@@ -68,51 +68,54 @@
 		</div>
 	</div>
 </div>
-<h1 id="result"></h1>
 </div>
 <div id='seconddiv' class='pagediv'>
 <div class="fullwide">
-		<div class='middle left'>
-			<div class='left-up'>
-				<p class="donut-title">도시별 총 전력<br>실제 사용량 비교</p>
-  				<canvas id="usageDonutChart" width="375" height="375"></canvas>
-			</div>
-			<div class='left-down'>
+	<div class='middle left'>
+		<div class="middle map">
+			<object class='svg-map' type="image/svg+xml"
+				data="${pageContext.request.contextPath}/resources/static/svg/southKoreaLow5.svg"> 브라우저가 SVG를 지원하지 않습니다. </object>
+			<img
+				src="${pageContext.request.contextPath}/resources/static/southKoreaLow5.png"
+				class="oversvg">
+		</div>
+		<div class='left-down'>
 			<div id="yearButtons" class="year-buttons">
 			<table id='year-table'>
-			<tr>
-			<td><button type="button" data-year="2015" class="year-btn">2015</button></td>
-			<td><button type="button" data-year="2016" class="year-btn">2016</button></td>
-			<td><button type="button" data-year="2017" class="year-btn">2017</button></td>
-			<td><button type="button" data-year="2018" class="year-btn">2018</button></td>
-			</tr>
-			<tr>
-			<td><button type="button" data-year="2019" class="year-btn">2019</button></td>
-			<td><button type="button" data-year="2020" class="year-btn">2020</button></td>
-			<td><button type="button" data-year="2021" class="year-btn">2021</button></td>
-			<td><button type="button" data-year="2022" class="year-btn">2022</button></td>
-			</tr>
-			<tr>
-			<td><button type="button" data-year="2023" class="year-btn">2023</button></td>
-			<td><button type="button" data-year="2024" class="year-btn">2024</button></td>
-			<td><button type="button" data-year="2025" class="year-btn">2025</button></td>
-			<td><button type="button" data-year="2026" class="year-btn">2026</button></td>
-			</tr>
-			<tr>
-			<td><button type="button" data-year="2027" class="year-btn">2027</button></td>
-			<td><button type="button" data-year="2028" class="year-btn">2028</button></td>
-			<td><button type="button" data-year="2029" class="year-btn">2029</button></td>
-			<td><button type="button" data-year="2030" class="year-btn">2030</button></td>
-			</tr>
+				<tr>
+				<td><button type="button" data-year="2015" class="year-btn">2015</button></td>
+				<td><button type="button" data-year="2016" class="year-btn">2016</button></td>
+				<td><button type="button" data-year="2017" class="year-btn">2017</button></td>
+				<td><button type="button" data-year="2018" class="year-btn">2018</button></td>
+				</tr>
+				<tr>
+				<td><button type="button" data-year="2019" class="year-btn">2019</button></td>
+				<td><button type="button" data-year="2020" class="year-btn">2020</button></td>
+				<td><button type="button" data-year="2021" class="year-btn">2021</button></td>
+				<td><button type="button" data-year="2022" class="year-btn">2022</button></td>
+				</tr>
+				<tr>
+				<td><button type="button" data-year="2023" class="year-btn">2023</button></td>
+				<td><button type="button" data-year="2024" class="year-btn">2024</button></td>
+				<td><button type="button" data-year="2025" class="year-btn">2025</button></td>
+				<td><button type="button" data-year="2026" class="year-btn">2026</button></td>
+				</tr>
+				<tr>
+				<td><button type="button" data-year="2027" class="year-btn">2027</button></td>
+				<td><button type="button" data-year="2028" class="year-btn">2028</button></td>
+				<td><button type="button" data-year="2029" class="year-btn">2029</button></td>
+				<td><button type="button" data-year="2030" class="year-btn">2030</button></td>
+				</tr>
 			</table>
 			</div>
-			</div>
 		</div>
-		<div class='up'>
+	</div>
+	<div class='up'>
 		<div class="middle chart">
 			<h2 id="usageTitle" class='div-main-h2'>${year}년 ${region} 월별 전력 사용량 그래프</h2> <label class='annotation'>(단위/GWh)</label>
 			<div id="selectBox">
-				<label class='select-label2'>도시:</label> <select id="citySelect" class='select2' style="color:black;">
+				<label class='select-label2'>도시:</label> 
+				<select id="citySelect" class='select2' style="color:black;">
 					<option value="강원도">강원도</option>
 					<option value="경기도">경기도</option>
 					<option value="경상남도">경상남도</option>
@@ -142,50 +145,32 @@
     				• <b style="color:black;">장기 모델</b> : 시·도별 월별 전력 사용량으로 장기적인<br>추세를 예측합니다. 예상 정확도는 단기 모델에 비해 낮습니다.<br>
 				</div>
 			</div>
-			<canvas id="usageChart" width="600" height="350"></canvas>
-			
+			<canvas id="usageChart" width="600px" height="370px"></canvas>
 		</div>
 		<div class='middle down'>
-		<h2 id='totalTitle' class='div-main-h2'>2015년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
+			<h2 id='totalTitle' class='div-main-h2'>2015년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
 			<div id='t-text-container'>
 				<div class='t-text tt1'>
 				<h2 id='totalUse' class='t-h2'></h2>
-				총 전력 사용량
+					총 전력 사용량
 				</div>
 				<div class='t-text tt2'>
-				<h2 id='totalPre' class='t-h2'></h2>
-				총 예측 사용량
+					<h2 id='totalPre' class='t-h2'></h2>
+					총 예측 사용량
 				</div>
 			</div>
-		<canvas id="totalChart" width="600" height="120"></canvas>
+			<canvas id="totalChart" width="600px" height="130px"></canvas>
 		</div>
-		</div>
-		<div class="middle map">
-			<%-- <div class="year-select-container">
-				<label for="yearSelect" class='select-label'>연도 선택: </label> <select id="yearSelect" class='select'>
-					<option value="2015" <c:if test="${year == null || year == 2015}">selected</c:if>>2015</option>
-					<option value="2016" <c:if test="${year == 2016}">selected</c:if>>2016</option>
-					<option value="2017" <c:if test="${year == 2017}">selected</c:if>>2017</option>
-					<option value="2018" <c:if test="${year == 2018}">selected</c:if>>2018</option>
-					<option value="2019" <c:if test="${year == 2019}">selected</c:if>>2019</option>
-					<option value="2020" <c:if test="${year == 2020}">selected</c:if>>2020</option>
-					<option value="2021" <c:if test="${year == 2021}">selected</c:if>>2021</option>
-					<option value="2022" <c:if test="${year == 2022}">selected</c:if>>2022</option>
-					<option value="2023" <c:if test="${year == 2023}">selected</c:if>>2023</option>
-					<option value="2024" <c:if test="${year == 2024}">selected</c:if>>2024</option>
-					<option value="2025" <c:if test="${year == 2025}">selected</c:if>>2025</option>
-					<option value="2026" <c:if test="${year == 2026}">selected</c:if>>2026</option>
-					<option value="2027" <c:if test="${year == 2027}">selected</c:if>>2027</option>
-					<option value="2028" <c:if test="${year == 2028}">selected</c:if>>2028</option>
-					<option value="2029" <c:if test="${year == 2029}">selected</c:if>>2029</option>
-					<option value="2030" <c:if test="${year == 2030}">selected</c:if>>2030</option>
-				</select>
-			</div> --%>
-			<object class='svg-map' type="image/svg+xml"
-				data="${pageContext.request.contextPath}/resources/static/svg/southKoreaLow4.svg"> 브라우저가 SVG를 지원하지 않습니다. </object>
-			<img
-				src="${pageContext.request.contextPath}/resources/static/southKoreaLow3.png"
-				class="oversvg">
+	</div>
+		<div class="middle right">
+			<div class='left-up'>
+				<p class="donut-title">도시별 총 전력<br>실제 사용량 비교</p>
+  				<canvas id="usageDonutChart" width="460px" height="465px"></canvas>
+			</div>
+			<div class='left-up'>
+				<p class="donut-title">도시별 총 전력<br>예측 사용량 비교</p>
+  				<canvas id="usageDonutChart2" width="460px" height="465px"></canvas>
+			</div>
 		</div>
 	</div>
 </div>
@@ -253,7 +238,6 @@ $(function () {
 	});
 </script>
 <script>
-
 $(document).ready(function() {
 const cityCodeMap = {
 	"강원도": 0,
@@ -297,24 +281,24 @@ const regionMap = {
 
 //도넛 그래프 색상
 const fixedColors = [
-    '#FF6384', // 강원도
-    '#36A2EB', // 경기도
-    '#FFCE56', // 경상남도
-    '#4BC0C0', // 경상북도
-    '#9966FF', // 광주
-    '#FF9F40', // 대구
-    '#C9CBCF', // 대전
-    '#8D6E63', // 부산
-    '#66BB6A', // 서울
-    '#D4E157', // 세종
-    '#BA68C8', // 울산
-    '#7986CB', // 인천
-    '#F06292', // 전라남도
-    '#4DD0E1', // 전라북도
-    '#AED581', // 제주도
-    '#FFD54F', // 충청남도
-    '#90A4AE' // 충청북도
-];	
+  'rgb(28, 61, 76)',     // 1
+  'rgb(37, 70, 84)',     // 2
+  'rgb(47, 79, 92)',     // 3
+  'rgb(56, 88, 100)',    // 4
+  'rgb(66, 97, 109)',    // 5
+  'rgb(75, 106, 117)',   // 6
+  'rgb(85, 115, 125)',   // 7
+  'rgb(94, 124, 133)',   // 8
+  'rgb(104, 133, 141)',  // 9
+  'rgb(113, 142, 149)',  // 10
+  'rgb(123, 151, 157)',  // 11
+  'rgb(132, 160, 165)',  // 12
+  'rgb(142, 169, 173)',  // 13
+  'rgb(151, 178, 181)',  // 14
+  'rgb(161, 187, 189)',  // 15
+  'rgb(170, 196, 197)',  // 16
+  'rgb(180, 200, 210)'   // 17
+];
 
 const regionMapReverse = {};
 for (const eng in regionMap) {
@@ -348,68 +332,95 @@ $('#yearButtons').on('click', '.year-btn', function() {
     // 차트 및 도넛 갱신 호출
     refreshAll();
     donut(year);
+    donut2(year);
   });
 
 // 차트 초기화: 두 개 데이터셋 (실제, 예측)
 const chart = new Chart(ctx, {
-    
-	
-	
     data: {
-    	labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
-      	datasets: [
-        {
-          type: 'bar',
-          label: '실제 월별 전력 사용량',
-          data: usageData,
-          borderColor: 'rgba(75, 192, 192, 1)',
-          backgroundColor: 'rgba(75, 192, 192, 0.5)',
-          fill: false,
-          tension: 0.1,
-          yAxisID: 'y',
-          datalabels: {
-              display: false
+        labels: ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"],
+        datasets: [
+            {   // 라인 차트 (예측) 먼저 작성 → 위로 표시됨
+                type: 'line',
+                label: '예측 월별 전력 사용량',
+                data: predictionData,
+                borderColor: 'rgb(235, 79, 112)',
+                backgroundColor: 'rgb(235, 79, 112)',
+                fill: false,
+                tension: 0.1,
+                yAxisID: 'y',
+                datalabels: {
+                    display: false
+                },
+                borderWidth: 3,      // 라인 더 두껍게 (선택)
+                pointRadius: 5      // 점 크기 (선택)
+            },
+            {   // 바 차트 (실제) 나중 작성 → 아래로 표시됨
+                type: 'bar',
+                label: '실제 월별 전력 사용량',
+                data: usageData,
+                borderColor: [
+                	  'rgb(28, 61, 76)',    // 1월
+                	  'rgb(42, 74, 88)',    // 2월
+                	  'rgb(56, 87, 100)',   // 3월
+                	  'rgb(70, 100, 112)',  // 4월
+                	  'rgb(84, 113, 124)',  // 5월
+                	  'rgb(98, 126, 136)',  // 6월
+                	  'rgb(112, 139, 148)', // 7월
+                	  'rgb(126, 152, 160)', // 8월
+                	  'rgb(140, 165, 172)', // 9월
+                	  'rgb(154, 178, 184)', // 10월
+                	  'rgb(168, 191, 196)', // 11월
+                	  'rgb(180, 200, 210)'  // 12월
+                ],
+                backgroundColor: [
+                	  'rgb(28, 61, 76)',    // 1월
+                	  'rgb(42, 74, 88)',    // 2월
+                	  'rgb(56, 87, 100)',   // 3월
+                	  'rgb(70, 100, 112)',  // 4월
+                	  'rgb(84, 113, 124)',  // 5월
+                	  'rgb(98, 126, 136)',  // 6월
+                	  'rgb(112, 139, 148)', // 7월
+                	  'rgb(126, 152, 160)', // 8월
+                	  'rgb(140, 165, 172)', // 9월
+                	  'rgb(154, 178, 184)', // 10월
+                	  'rgb(168, 191, 196)', // 11월
+                	  'rgb(180, 200, 210)'  // 12월
+                ],
+                fill: false,
+                tension: 0.1,
+                yAxisID: 'y',
+                datalabels: {
+                    display: false
+                }
             }
-        },
-        {
-          type: 'line',
-          label: '예측 월별 전력 사용량',
-          data: predictionData,
-          borderColor: 'rgba(255, 99, 132, 1)',
-          backgroundColor: 'rgba(255, 99, 132, 1)',
-          fill: false,
-          tension: 0.1,
-          yAxisID: 'y',
-          datalabels: {
-              display: false
-          }
-        }
         ]
     },
     options: {
-    	scales: {
-    		x: {
-    			ticks: {
-    				color:'#ececec'
-    			}
-    		},
-        	y: {
-          		beginAtZero: true,
-	        	ticks: {
-	        		color:'#ececec',
-	                stepSize:1000 // 눈금 간격 설정
-	              }
-        	}
-      	},
-      	plugins: {
-      	    legend: {
-      	      	labels: {
-      	        	color: '#ececec' // 범례 항목 글자 색
-      	      	}
-      	    }
-      	}
+        scales: {
+            x: {
+                ticks: {
+                    color: '#ececec'
+                }
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    color: '#ececec',
+                    stepSize: 1000  // 눈금 간격
+                }
+            }
+        },
+        plugins: {
+            legend: {
+                labels: {
+                    color: '#ececec' // 범례 글씨 색
+                }
+            }
+        }
     }
 });
+
 
 // 실제 사용량 데이터 불러오기 및 차트 업데이트
 function fetchUsageData(year, regionKor) {
@@ -708,15 +719,15 @@ totalChart = new Chart(totalCtx, {
     {
         label: '실제 총 사용량',
         data: [0],
-        backgroundColor: 'rgba(75, 192, 192, 0.5)',
-        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgb(58, 91, 106)',
+        borderColor: 'rgb(58, 91, 106)',
         borderWidth: 1
     },
     {
         label: '예측 총 사용량',
         data: [0],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgba(255, 99, 132, 1)',
+        backgroundColor: 'rgb(235, 79, 112)',
+        borderColor: 'rgb(235, 79, 112)',
         borderWidth: 1
     }
     ]
@@ -776,13 +787,17 @@ $(document).on('click', function (e) {
     }
 });
 let donutChart = null;   // 전역 핸들
+let donutChart2 = null;
 
 function donut(selectedYear) {
   const apiUrl = '/api/usage/total/' + selectedYear;
 
   $.getJSON(apiUrl).done(data => {
-
+	
+	// 값이 큰 순대로 정렬
+	data.sort((a, b) => (Number(b.totalUsage) || 0) - (Number(a.totalUsage) || 0));
     /* 데이터·색상 준비 */
+    console.log("도넛차트1 데이터: "+data);
     const labels = data.map(d => d.region);
     const usage  = data.map(d => Number(d.totalUsage) || 0);
 
@@ -810,7 +825,7 @@ function donut(selectedYear) {
     	      label: `${selectedYear}년도 지역별 총 사용량`,
     	      data: usage,
     	      backgroundColor: fixedColors.slice(0, labels.length),
-    	      borderWidth: 1
+    	      borderWidth: 0
     	    }]
     	  },
     	  options: {
@@ -852,7 +867,113 @@ function donut(selectedYear) {
 
 donut(year);
 
+// 두번째 도넛차트 데이터 가져오기
+async function getYearlyPredictionSum(year) {
+    const citys = ['강원도', '경기도', '경상남도', '경상북도', '광주', '대구', '대전', '부산', '서울', '세종', '울산', '인천', '전라남도', '전라북도', '제주', '충청남도', '충청북도'];
+    
+    return new Promise(function(resolve, reject) {
+        $.ajax({
+            url: '/modelLongYearly',  // ✅ FastAPI 새 엔드포인트
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ year: year }), // ✅ 연도만 보냄
+            success: function(response) {
+                const predictions = response.predictions; // { "0": [12개값], "1": [...], ... }
 
+                // 도시별 1~12월 합계
+                const yearlySums = Object.keys(predictions).map(cityCode => {
+                    const monthlyValues = predictions[cityCode]; // 12개 배열
+                    const yearlySum = monthlyValues.reduce((sum, val) => sum + val, 0);
+                    return yearlySum;
+                });
+
+                // 도시명 + 합계 묶기
+                const cityUsageArray = citys.map((city, idx) => {
+                    return { city: city, value: yearlySums[idx] };
+                });
+
+                // value 내림차순 정렬
+                cityUsageArray.sort((a, b) => b.value - a.value);
+
+                resolve(cityUsageArray);
+            },
+            error: function(xhr, status, error) {
+                reject('FastAPI 호출 오류: ' + xhr.status + ' ' + error);
+            }
+        });
+    });
+}
+
+// 두번째 도넛함수 그리기
+function donut2(selectedYear){
+	getYearlyPredictionSum(selectedYear).then(sortedArray => {	 
+		
+	    /* 데이터 준비 */
+	    const labels = sortedArray.map(item => item.city);
+	    const usage  = sortedArray.map(item => item.value);
+	    console.log("도넛2차트 데이터셋"+sortedArray);
+
+	    /* ── 이미 차트가 있으면 업데이트만 ─────────────────── */
+	    if (donutChart2) {
+	      donutChart2.data.labels                    = labels;
+	      donutChart2.data.datasets[0].data          = usage;
+	      donutChart2.data.datasets[0].backgroundColor = fixedColors.slice(0, labels.length);
+	      donutChart2.data.datasets[0].label         =
+	        `${selectedYear}년도 지역별 총 사용량`;
+	        donutChart2.options.plugins.datalabels.formatter = function(value, context) {
+	            return context.chart.data.labels[context.dataIndex]; // ✅ 항상 지역명
+	          };
+	      donutChart2.update();
+	      return;
+	    }
+	    
+    	const ctx = document.getElementById('usageDonutChart2').getContext('2d');
+    	donutChart2 = new Chart(ctx, {
+    	  type: 'doughnut',
+    	  data: {
+    	    labels: labels,
+    	    datasets: [{
+    	      label: `${selectedYear}년도 지역별 총 사용량`,
+    	      data: usage,
+    	      backgroundColor: fixedColors.slice(0, labels.length),
+    	      borderWidth: 0
+    	    }]
+    	  },
+    	  options: {
+    	    responsive: false,
+    	    plugins: {
+    	      legend: { display: false },
+    	      tooltip: {
+    	        callbacks: {
+    	          label: function(context) {
+    	            const value = context.parsed;
+    	            return value.toLocaleString() + ' GWh';
+    	          }
+    	        }
+    	      },
+    	      datalabels: {
+    	        color: 'rgb(33,28,57)',
+    	        font: { weight: 'bold', size: 12 },
+    	        textStrokeColor: 'white',                  // ✅ 테두리 색상
+    	        textStrokeWidth: 2,                        // ✅ 테두리 두께
+    	        formatter: function(value, context) {
+    	          return context.chart.data.labels[context.dataIndex]; // ✅ 지역명 표시
+    	        },
+    	        anchor: function(context) {
+    	            // 홀수/짝수 인덱스로 anchor 변경 → 지그재그 배치
+    	            return context.dataIndex % 2 === 0 ? 'end' : 'start';
+    	          },
+    	          align: function(context) {
+    	            return context.dataIndex % 2 === 0 ? 'start' : 'end';
+    	          },
+    	          offset: 30
+    	      }
+    	    }
+    	  }
+    	});
+	});
+}
+donut2(year);
 });
 </script>
 

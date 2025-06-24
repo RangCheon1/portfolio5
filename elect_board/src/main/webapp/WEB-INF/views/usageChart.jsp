@@ -16,7 +16,7 @@
             <button type="button" id="toggleYearsBtn">연도 선택 펼치기</button>
             <div class="checkbox-group" id="yearsCheckboxGroup"
                  style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
-                <c:forEach var="y" begin="2015" end="2026">
+                <c:forEach var="y" begin="2015" end="2030">
                     <label class="checkbox-item">
                         <input type="checkbox" name="years" value="${y}"
                                <c:if test="${selectedYears != null and selectedYears.contains(y.toString())}">checked</c:if> />

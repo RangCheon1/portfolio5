@@ -102,7 +102,42 @@ public class ModelController {
 
         return result;
     }
+    
+    // 연간 전체 예측 요청 처리 (FastAPI로 POST 요청)
+    @PostMapping(value = "/modelLongYearly", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> predictLongYearlyJson(@RequestBody Map<String, Object> request) {
 
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8000/model/long/yearly";
+
+        Map<String, Object> sendData = new HashMap<>();
+
+        try {
+            int year = Integer.parseInt(request.get("year").toString());
+            sendData.put("year", year);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Invalid input data format: " + e.getMessage());
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(sendData, headers);
+
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+
+        Object predictions = null;
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            predictions = response.getBody().get("predictions");
+        } else {
+            throw new IllegalStateException("Failed to get yearly predictions from FastAPI");
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("predictions", predictions); // JS가 바로 사용할 수 있게 그대로 반환
+
+        return result;
+    }
     
     // 전력 사용량 조회
     @GetMapping("/getPrevUsage")
