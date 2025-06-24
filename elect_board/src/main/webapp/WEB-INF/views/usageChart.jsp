@@ -8,7 +8,7 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-<div class="container">
+<div id="page1" class="container">
 
     <!-- 조회 폼 -->
     <form id="searchForm" method="get" action="/usageChart">
@@ -164,11 +164,12 @@
 
     // 그래프 표시 옵션에 따라 차트 표시/숨김 처리
     function toggleGraphVisibility() {
-    const selected = document.getElementById('graphToggle').value;
+    const container = document.getElementById('page1');
+    const selected = container.querySelector('#graphToggle').value;
 
-    const usageContainer = document.getElementById('usageChart').parentElement;
-    const predictedContainer = document.getElementById('predictedChart').parentElement;
-    const longTermContainer = document.getElementById('longTermChart').parentElement;
+    const usageContainer = container.querySelector('#usageChart').parentElement;
+    const predictedContainer = container.querySelector('#predictedChart').parentElement;
+    const longTermContainer = container.querySelector('#longTermChart').parentElement;
 
     // 초기화: 모두 숨김
     usageContainer.style.display = 'none';
@@ -225,29 +226,25 @@
 
     // 실제 사용량 차트 그리기 함수
     function drawActualUsageChart() {
-    const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)',
-        'rgba(255, 206, 86)', 'rgba(75, 192, 192)',
-        'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
+    const container = document.getElementById('page1'); // 고유 컨테이너 기준
+    const colors = [
+        'rgba(255, 99, 132)',
+        'rgba(54, 162, 235)',
+        'rgba(255, 206, 86)',
+        'rgba(75, 192, 192)',
+        'rgba(153, 102, 255)',
+        'rgba(255, 159, 64)'
+    ];
 
-    // 선택된 연도 및 지역 값 가져오기 (필요에 따라 맞게 조정)
-    const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
-    const selectedRegion = document.querySelector('select[name="region"]').value;
+    const selectedYears = Array.from(container.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
+    const selectedRegion = container.querySelector('select[name="region"]').value;
+
+    const canvas = container.querySelector('#usageChart');
+    const overlay = container.querySelector('#usageChartOverlay');
 
     // 지역 또는 연도 미선택 시 안내 메시지 표시
-    if (!selectedRegion || selectedRegion === "") {
-        document.getElementById('usageChart').style.filter = 'blur(4px)';
-        const overlay = document.getElementById('usageChartOverlay');
-        overlay.textContent = '지역,연도를 선택해주세요.';
-        overlay.classList.add('show');
-        if (usageChart) {
-            usageChart.destroy();
-            usageChart = null;
-        }
-        return;
-    }
-    if (selectedYears.length === 0) {
-        document.getElementById('usageChart').style.filter = 'blur(4px)';
-        const overlay = document.getElementById('usageChartOverlay');
+    if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
+        canvas.classList.add('blur');
         overlay.textContent = '지역,연도를 선택해주세요.';
         overlay.classList.add('show');
         if (usageChart) {
@@ -258,11 +255,13 @@
     }
 
     // 월별 데이터가 하나라도 존재하는 데이터만 필터링
-    const filteredData = chartData.filter(item => 
-        item.monthlyData && item.monthlyData.some(value => value != null)
+    const filteredData = chartData.filter(item =>
+        item.region === selectedRegion &&
+        selectedYears.includes(String(item.year)) &&
+        item.monthlyData &&
+        item.monthlyData.some(value => value != null)
     );
 
-    // 필터링된 데이터로 차트 데이터셋 구성
     const datasets = filteredData.map((item, idx) => ({
         label: item.year + "년 " + item.region,
         data: item.monthlyData,
@@ -273,27 +272,20 @@
         fill: chartType === 'line' ? false : true,
     }));
 
-    const ctx = document.getElementById('usageChart').getContext('2d');
     if (usageChart) usageChart.destroy();
 
-    // 데이터가 없으면 차트 블러 처리 및 메시지 표시
     if (datasets.length === 0) {
-    const usageCanvas = document.getElementById('usageChart');
-    usageCanvas.classList.add('blur');  // 캔버스만 blur 처리
+        canvas.classList.add('blur');
+        overlay.textContent = '실제 전력 사용량이 없습니다.';
+        overlay.classList.add('show');
+        usageChart = null;
+        return;
+    } else {
+        canvas.classList.remove('blur');
+        overlay.classList.remove('show');
+    }
 
-    const overlay = document.getElementById('usageChartOverlay');
-    overlay.classList.add('show');
-    usageChart = null;
-    return;
-} else {
-    const usageCanvas = document.getElementById('usageChart');
-    usageCanvas.classList.remove('blur'); // blur 해제
-
-    const overlay = document.getElementById('usageChartOverlay');
-    overlay.classList.remove('show');
-}
-
-    // 차트 생성
+    const ctx = canvas.getContext('2d');
     usageChart = new Chart(ctx, {
         type: chartType,
         data: { labels, datasets },
@@ -305,11 +297,15 @@
                 legend: { position: 'top' }
             },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: '사용량 (gWh)' } }
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: '사용량 (gWh)' }
+                }
             }
         }
     });
 }
+
 
 
     // 단기 예측 API 호출 함수

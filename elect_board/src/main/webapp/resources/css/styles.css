@@ -10,8 +10,8 @@ body {
 
 /* 메인 컨테이너 */
 .container {
-    width: 90vw;
-    height: 92vh;
+    width: 88vw;
+    height: 98vh;
     margin: 20px auto;
     background-color: #111827;
     padding: 20px;
@@ -35,14 +35,14 @@ body {
 }
 
 /* 라벨 */
-label {
+#page1 label {
     color: #9ca3af;
     font-weight: 600;
     font-size: 1.1rem;
 }
 
 /* 셀렉트 */
-select {
+#page1 select {
     background-color: #1f2937;
     border: 1px solid #374151;
     border-radius: 8px;
@@ -52,14 +52,14 @@ select {
     transition: border-color 0.2s;
 }
 
-select:focus {
+#page1 select:focus {
     outline: none;
     border-color: #60a5fa;
 }
 
 /* 버튼 */
-button,
-input[type="submit"] {
+#page1 button,
+#page1 input[type="submit"] {
     background-color: #0e3b4f;
     color: #fff;
     font-weight: 600;
@@ -70,8 +70,8 @@ input[type="submit"] {
     transition: background-color 0.3s;
 }
 
-button:hover,
-input[type="submit"]:hover {
+#page1 button:hover,
+#page1 input[type="submit"]:hover {
     background-color: #1d4ed8;
 }
 
@@ -153,7 +153,7 @@ input[type="submit"]:hover {
 }
 
 /* 차트 블러 효과 */
-canvas.blur {
+#page1 canvas.blur {
     filter: blur(4px);
 }
 
@@ -199,7 +199,7 @@ canvas.blur {
 /* multi-select 스타일 */
 /* -------------------- */
 
-.multi-select {
+#page1 .multi-select {
     position: relative;
     width: 250px;
     font-family: 'Noto Sans KR', sans-serif;
@@ -207,7 +207,7 @@ canvas.blur {
 }
 
 /* select box 스타일 */
-.multi-select .select-box {
+#page1 .multi-select .select-box {
     background-color: #1f2937;
     border: 1px solid #374151;
     border-radius: 8px;
@@ -218,14 +218,14 @@ canvas.blur {
     transition: border-color 0.2s;
 }
 
-.multi-select .select-box:focus,
-.multi-select .select-box:hover {
+#page1 .multi-select .select-box:focus,
+#page1 .multi-select .select-box:hover {
     border-color: #60a5fa;
     outline: none;
 }
 
 /* 체크박스 리스트 컨테이너 */
-.multi-select .checkbox-list {
+#page1 .multi-select .checkbox-list {
     position: absolute;
     top: 100%;
     left: 0;
@@ -242,14 +242,14 @@ canvas.blur {
 }
 
 /* 체크박스 리스트 확장 시 */
-.multi-select .checkbox-list.expanded {
+#page1 .multi-select .checkbox-list.expanded {
     max-height: 200px;
     padding: 10px;
     overflow-y: auto;
 }
 
 /* 체크박스 항목 */
-.multi-select .checkbox-item {
+#page1 .multi-select .checkbox-item {
     display: inline-block;
     margin-right: 12px;
     color: #d1d5db;
@@ -259,13 +259,13 @@ canvas.blur {
 }
 
 /* 체크박스 항목 호버 */
-.multi-select .checkbox-item:hover {
+#page1 .multi-select .checkbox-item:hover {
     background-color: #374151;
     border-radius: 4px;
 }
 
 /* 체크박스 input 스타일 */
-.multi-select .checkbox-item input[type="checkbox"] {
+#page1 .multi-select .checkbox-item input[type="checkbox"] {
     margin-right: 6px;
     cursor: pointer;
     vertical-align: middle;
