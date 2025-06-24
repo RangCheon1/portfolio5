@@ -1,57 +1,89 @@
 /* 기본 스타일 */
 body {
-    background-color: #0d1117;
-    color: #c9d1d9;
+    background-color: #0a0f1a;
+    color: #d1d5db;
     font-family: 'Noto Sans KR', sans-serif;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    height: 100%;
     margin: 0;
+    padding: 0;
+    height: 95vh;
 }
 
-/* 컨테이너: 화면 전체를 채우는 메인 박스 */
+/* 메인 컨테이너 */
 .container {
-    flex: 1 1 auto;
-    width: 88vw;
-    height: 98vh;
-    background-color: #161b22;
-    border-radius: 12px;
+    width: 90vw;
+    height: 92vh;
+    margin: 20px auto;
+    background-color: #111827;
     padding: 20px;
-    box-sizing: border-box;
+    border-radius: 14px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.6);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    overflow: hidden;
 }
 
 /* 폼 그룹 */
 .form-group {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .inline-group {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
-/* 라벨 스타일 */
+/* 라벨 */
 label {
+    color: #9ca3af;
     font-weight: 600;
     font-size: 1.1rem;
-    color: #8b949e;
 }
 
-/* 체크박스 그룹 */
-.checkbox-group {
-    background-color: #21262d;
+/* 셀렉트 */
+select {
+    background-color: #1f2937;
+    border: 1px solid #374151;
     border-radius: 8px;
-    padding: 0 10px;
+    color: #f9fafb;
+    padding: 8px 14px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+select:focus {
+    outline: none;
+    border-color: #60a5fa;
+}
+
+/* 버튼 */
+button,
+input[type="submit"] {
+    background-color: #0e3b4f;
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    padding: 8px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover,
+input[type="submit"]:hover {
+    background-color: #1d4ed8;
+}
+
+/* 연도 선택 박스 */
+.checkbox-group {
+    background-color: #1f2937;
     margin-top: 10px;
+    padding: 0 10px;
+    border-radius: 10px;
     overflow: hidden;
+    transition: max-height 0.4s ease, padding 0.4s ease;
     max-height: 0;
-    transition: max-height 0.5s ease, padding 0.5s ease;
 }
 
 .checkbox-group.expanded {
@@ -59,134 +91,182 @@ label {
     max-height: 200px;
 }
 
-/* 체크박스 항목 */
 .checkbox-item {
     display: inline-block;
-    margin-right: 15px;
-    color: #c9d1d9;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-/* 셀렉트 박스 */
-select {
-    background-color: #21262d;
-    border: 1px solid #30363d;
-    border-radius: 8px;
-    color: #c9d1d9;
-    padding: 6px 12px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: border-color 0.3s ease;
-}
-
-select:hover,
-select:focus {
-    border-color: #58a6ff;
-    outline: none;
-}
-
-/* 버튼 및 제출버튼 */
-button,
-input[type="submit"] {
-    background-color: #238636;
-    border: none;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-button:hover,
-input[type="submit"]:hover {
-    background-color: #2ea043;
+    margin-right: 12px;
+    color: #d1d5db;
 }
 
 /* 정보 카드 */
 .info-group {
-    background-color: #161b22;
+    background-color: #1f2937;
     border-radius: 12px;
     padding: 15px 20px;
-    margin-bottom: 30px;
     box-shadow: inset 0 0 5px rgba(255, 255, 255, 0.05);
-    flex: 0 0 auto;
 }
 
 .info-card h3 {
     margin-top: 0;
-    color: #58a6ff;
+    color: #ececec;
 }
 
-/* 차트 행 */
+/* 차트 영역 */
 .chart-row {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    box-sizing: border-box;
-    flex: 1 1 auto;
-    overflow: hidden;
+    flex: 1;
+    flex-wrap: wrap;
 }
 
-.chart-row.three-charts .chart-container {
-    flex: 1 1 0;
-    max-width: calc(33.333% - 14px);
+.chart-row.three-charts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-between;
 }
 
 /* 차트 컨테이너 */
 .chart-container {
-    position: relative;
-    background-color: #161b22;
-    border-radius: 12px;
-    padding: 15px 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
-    display: flex;
-    flex-direction: column;
-    height: 470px;
+    flex: 1 1 32%;
+    max-width: 32%;
+    min-width: 300px;
+    height: 530px;
     box-sizing: border-box;
+    position: relative;
+    background-color: #1f2937;
+    border-radius: 14px;
 }
 
-/* 차트 제목 */
 .chart-container h3 {
-    color: #58a6ff;
-    margin-top: 0px;
-    margin-bottom: 12px;
-    font-weight: 700;
+    margin: 5px 10px 10px 10px;
+    color: #ececec;
     font-size: 1.2rem;
+    font-weight: 700;
+    text-align: center;
 }
 
-/* 차트 캔버스 */
 .chart-container canvas {
     flex: 1;
-    width: 100%;
-    height: 100%;
+    width: 100% !important;
+    height: 90% !important;
 }
 
-/* 블러 처리 클래스 */
+/* 차트 블러 효과 */
 canvas.blur {
     filter: blur(4px);
 }
 
 /* 오버레이 메시지 */
 .chart-overlay {
-    display: none;
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-size: 1.1em;
-    font-weight: 600;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1rem;
+    color: #ffffff;
     pointer-events: none;
-    user-select: none;
-    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
 .chart-overlay.show {
-    display: block;
+    opacity: 1;
+}
+
+/* 미디어 쿼리 (반응형 대응) */
+@media (max-width: 1024px) {
+    .chart-container {
+        flex: 1 1 48%;
+        max-width: 48%;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+/* -------------------- */
+/* multi-select 스타일 */
+/* -------------------- */
+
+.multi-select {
+    position: relative;
+    width: 250px;
+    font-family: 'Noto Sans KR', sans-serif;
+    user-select: none;
+}
+
+/* select box 스타일 */
+.multi-select .select-box {
+    background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    color: #f9fafb;
+    padding: 8px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.multi-select .select-box:focus,
+.multi-select .select-box:hover {
+    border-color: #60a5fa;
+    outline: none;
+}
+
+/* 체크박스 리스트 컨테이너 */
+.multi-select .checkbox-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    max-height: 0;
+    padding: 0 10px;
+    overflow: hidden;
+    background-color: #1f2937;
+    border-radius: 10px;
+    box-sizing: border-box;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    transition: max-height 0.4s ease, padding 0.4s ease;
+    z-index: 1000;
+}
+
+/* 체크박스 리스트 확장 시 */
+.multi-select .checkbox-list.expanded {
+    max-height: 200px;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+/* 체크박스 항목 */
+.multi-select .checkbox-item {
+    display: inline-block;
+    margin-right: 12px;
+    color: #d1d5db;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* 체크박스 항목 호버 */
+.multi-select .checkbox-item:hover {
+    background-color: #374151;
+    border-radius: 4px;
+}
+
+/* 체크박스 input 스타일 */
+.multi-select .checkbox-item input[type="checkbox"] {
+    margin-right: 6px;
+    cursor: pointer;
+    vertical-align: middle;
 }

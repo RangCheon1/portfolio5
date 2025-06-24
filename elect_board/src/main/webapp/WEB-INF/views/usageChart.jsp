@@ -5,48 +5,53 @@
     <title>전력 사용량 비교</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" type="text/css" href="/resources/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
 <div class="container">
 
     <!-- 조회 폼 -->
     <form id="searchForm" method="get" action="/usageChart">
-        <div class="form-group">
-            <label>연도 선택:</label>
-            <button type="button" id="toggleYearsBtn">연도 선택 펼치기</button>
-            <div class="checkbox-group" id="yearsCheckboxGroup"
-                 style="max-height: 0; overflow: hidden; transition: max-height 0.5s ease;">
-                <c:forEach var="y" begin="2015" end="2030">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="years" value="${y}"
-                               <c:if test="${selectedYears != null and selectedYears.contains(y.toString())}">checked</c:if> />
-                        ${y}년
-                    </label>
-                </c:forEach>
-            </div>
-        </div>
+<!-- 연도, 지역, 그래프 표시 가로 배치 -->
+<div class="form-group flex-row" style="display: flex; align-items: center; gap: 20px;">
+    <!-- 연도 선택 -->
+    <div class="multi-select" tabindex="0">
+  <div class="select-box">연도 선택</div>
+  <div class="checkbox-list">
+    <c:forEach var="y" begin="2015" end="2030">
+      <label class="checkbox-item">
+        <input type="checkbox" name="years" value="${y}"
+               <c:if test="${selectedYears != null and selectedYears.contains(y.toString())}">checked</c:if> />
+        ${y}년
+      </label>
+    </c:forEach>
+  </div>
+</div>
 
-        <div class="form-group inline-group">
-            <label>지역 선택:</label>
-            <select name="region">
-                <option value="" disabled <c:if test="${empty selectedRegion}">selected</c:if>>
-    -- 지역을 선택하세요 --
-</option>
-<option value="all" <c:if test="${selectedRegion == 'all'}">selected</c:if>>전체</option>
-<c:forEach var="r" items="${regionList}">
-    <option value="${r}" <c:if test="${selectedRegion == r}">selected</c:if>>${r}</option>
-</c:forEach>
-            </select>
+    <!-- 지역 선택 -->
+    <div>
+        <label>지역 선택:</label>
+        <select name="region">
+            <option value="" disabled <c:if test="${empty selectedRegion}">selected</c:if>>-- 지역을 선택하세요 --</option>
+            <option value="all" <c:if test="${selectedRegion == 'all'}">selected</c:if>>전체</option>
+            <c:forEach var="r" items="${regionList}">
+                <option value="${r}" <c:if test="${selectedRegion == r}">selected</c:if>>${r}</option>
+            </c:forEach>
+        </select>
+    </div>
 
-            <label style="margin-left: 20px;">그래프 표시:</label>
-            <select id="graphToggle" onchange="toggleGraphVisibility()">
-                <option value="both">모두 표시</option>
-                <option value="usage">실제 사용량만 표시</option>
-                <option value="predicted">예측 사용량(단기 + 장기)만 표시</option>
-                <option value="predicted_short">단기 예측 사용량만 표시</option>
-                <option value="predicted_long">장기 예측 사용량만 표시</option>
-            </select>
-        </div>
+    <!-- 그래프 표시 -->
+    <div>
+        <label>그래프 표시:</label>
+        <select id="graphToggle" onchange="toggleGraphVisibility()">
+            <option value="both">모두 표시</option>
+            <option value="usage">실제 사용량만 표시</option>
+            <option value="predicted">예측 사용량(단기 + 장기)만 표시</option>
+            <option value="predicted_short">단기 예측 사용량만 표시</option>
+            <option value="predicted_long">장기 예측 사용량만 표시</option>
+        </select>
+    </div>
+</div>
 
         <div class="form-group">
             <input type="submit" value="조회" />
@@ -96,7 +101,7 @@
 
         <!-- 실제 사용량 -->
         <div class="chart-container" style="position: relative;">
-            <div class="chart-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <div class="chart-header" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 5px 20px 0 10px; ">
                 <h3 style="margin: 0;">월별 전력 사용량 미리보기</h3>
                 <div class="form-group" style="margin: 0;">
                     <label for="chartType" style="margin-right: 8px;">그래프 타입:</label>
@@ -220,9 +225,9 @@
 
     // 실제 사용량 차트 그리기 함수
     function drawActualUsageChart() {
-    const colors = ['rgba(255, 99, 132, 0.5)', 'rgba(54, 162, 235, 0.5)',
-        'rgba(255, 206, 86, 0.5)', 'rgba(75, 192, 192, 0.5)',
-        'rgba(153, 102, 255, 0.5)', 'rgba(255, 159, 64, 0.5)'];
+    const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)',
+        'rgba(255, 206, 86)', 'rgba(75, 192, 192)',
+        'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
 
     // 선택된 연도 및 지역 값 가져오기 (필요에 따라 맞게 조정)
     const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
@@ -297,7 +302,7 @@
             maintainAspectRatio: false,
             plugins: {
                 title: { display: true, text: '월별 전력 사용량' },
-                legend: { position: 'bottom' }
+                legend: { position: 'top' }
             },
             scales: {
                 y: { beginAtZero: true, title: { display: true, text: '사용량 (gWh)' } }
@@ -309,47 +314,38 @@
 
     // 단기 예측 API 호출 함수
     async function fetchShortTermPrediction(year, region, actualMonthlyData) {
-        const cityEncoded = cityEncodeMap[region] ?? 0;
-        const preds = [];
+    const cityEncoded = cityEncodeMap[region] ?? 0;
+    const preds = [];
 
-        // 1월부터 12월까지 예측
-        for (let month = 1; month <= 12; month++) {
-            const prevYear = year - 1;
-            const key = prevYear + "_" + region;
-            let prev_usage = null;
+    for (let month = 1; month <= 12; month++) {
 
-            // 이전 연도 사용량 데이터를 찾음
-            if (allDataMap[key]) {
-                prev_usage = allDataMap[key][month - 1];
-            } else {
-                // 데이터 없으면 실제 데이터에서 이전 달 사용량 참고 (1월은 12월로)
-                prev_usage = month === 1 ? actualMonthlyData[11] : actualMonthlyData[month - 2];
-            }
+        const prevYear = year - 1;
+        const key = prevYear + "_" + region;
+        let prev_usage = allDataMap[key] ? allDataMap[key][month - 1] : (month === 1 ? actualMonthlyData[11] : actualMonthlyData[month - 2]);
 
-            // API 요청용 데이터 객체 생성
-            const requestBody = {
-                city_encoded: cityEncoded,
-                year: year - 2014,   // 예: 2015년 → 1
-                month,
-                prev_usage
-            };
+        const requestBody = {
+            city_encoded: cityEncoded,
+            year: year - 2014,
+            month,
+            prev_usage
+        };
 
-            try {
-                // FastAPI 단기 예측 엔드포인트 호출
-                const res = await fetch('http://localhost:8000/model/short', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(requestBody)
-                });
-                const json = await res.json();
-                preds.push(json.prediction);
-            } catch (e) {
-                console.error(`[단기예측 오류] ${region} ${year} ${month}`, e);
-                preds.push(null);
-            }
+        try {
+            const res = await fetch('http://localhost:8000/model/short', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(requestBody)
+            });
+            const json = await res.json();
+            preds.push(json.prediction);
+        } catch (e) {
+            console.error(`[단기예측 오류] ${region} ${year} ${month}`, e);
+            preds.push(null);
         }
-        return preds;
     }
+
+    return preds;
+}
 
     // 장기 예측 API 호출 함수 (단기와 구조 유사)
     async function fetchLongTermPrediction(year, region, actualMonthlyData) {
@@ -413,6 +409,7 @@
         predictedContainer.appendChild(overlay);
     }
 
+    // 지역 또는 연도 미선택 시 처리
     if (!selectedRegion || selectedRegion === "") {
         overlay.textContent = '지역,연도를 선택해주세요.';
         overlay.classList.add('show');
@@ -435,6 +432,28 @@
         return;
     }
 
+    // --- 2026년 초과 체크 ---
+    if (selectedYears.some(year => Number(year) > 2027)) {
+        showPredictionLimitMessage();
+        return;
+    }
+    if (selectedYears.includes('2027')) {
+        showPredictionLimitMessage();
+        return;
+    }
+
+    // 초과 메시지 함수
+    function showPredictionLimitMessage() {
+        overlay.textContent = '2026년 3월까지 예측이 가능합니다.';
+        overlay.classList.add('show');
+        canvas.classList.add('blur');
+        if (predictedChart) {
+            predictedChart.destroy();
+            predictedChart = null;
+        }
+    }
+
+    // 정상 처리: 오버레이, 블러 제거
     overlay.classList.remove('show');
     canvas.classList.remove('blur');
 
@@ -453,7 +472,7 @@
         return chartData.find(d => d.region === region && String(d.year) === String(year));
     }
 
-    // 단기 예측은 전체 지역/연도 돌림 (수정 원하면 알려주세요)
+    // 단기 예측은 전체 지역/연도 순회
     regions.forEach(region => {
         years.forEach(year => {
             const actualDataObj = findActualData(region, year);
@@ -473,7 +492,7 @@
 
     const allPredictions = await Promise.all(predictionPromises);
 
-    const colors = ['rgba(255, 99, 132, 0.7)', 'rgba(54, 162, 235, 0.7)', 'rgba(255, 206, 86, 0.7)'];
+    const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
     const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
     allPredictions.forEach((pred, idx) => {
@@ -514,7 +533,7 @@
             maintainAspectRatio: false,
             plugins: {
                 title: { display: true, text: '단기 예측 사용량 vs 실제 사용량' },
-                legend: { position: 'bottom' }
+                legend: { position: 'top' }
             },
             scales: {
                 y: {
@@ -527,6 +546,7 @@
 
 
 
+	//실제 그래프 그리기
     async function drawLongTermUsageChart() {
         const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
         const selectedRegion = document.querySelector('select[name="region"]').value;
@@ -605,10 +625,10 @@
         });
 
         const allPredictions = await Promise.all(predictionPromises);
-        const colors = ['rgba(75, 192, 192, 0.7)', 'rgba(153, 102, 255, 0.7)', 'rgba(255, 159, 64, 0.7)'];
+        const colors = ['rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
         const datasets = [];
 
-        // ✅ 이게 빠지면 오류 발생함
+        // 이게 빠지면 오류 발생함
         const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
         allPredictions.forEach((pred, idx) => {
@@ -652,7 +672,7 @@
                 maintainAspectRatio: false,
                 plugins: {
                     title: { display: true, text: '장기 예측 사용량 vs 실제 사용량' },
-                    legend: { position: 'bottom' }
+                    legend: { position: 'top' }
                 },
                 scales: {
                     y: {
@@ -674,23 +694,61 @@
 
     window.onload = function() {
 
-        // 연도 선택 펼치기/접기 토글 버튼 이벤트
-        document.getElementById('toggleYearsBtn').addEventListener('click', () => {
-        	const container = document.getElementById('yearsCheckboxGroup');
-        	const toggleBtn = document.getElementById('toggleYearsBtn');
+    	$(function() {
+    		  const $multiSelect = $('.multi-select');
+    		  const $selectBox = $multiSelect.find('.select-box');
+    		  const $checkboxList = $multiSelect.find('.checkbox-list');
 
-        	if (container.style.maxHeight && container.style.maxHeight !== '0px') {
-        	    // 펼쳐져 있으면 접기
-        	    container.style.maxHeight = '0';
-        	    container.style.padding = '0 10px';
-        	    toggleBtn.textContent = '연도 선택 펼치기';
-        	} else {
-        	    // 접혀 있으면 펼치기
-        	    container.style.maxHeight = container.scrollHeight + 'px';
-        	    container.style.padding = '10px';
-        	    toggleBtn.textContent = '연도 선택 접기';
-        	}
-        });
+    		  // select-box 클릭 시 체크박스 리스트 토글
+    		  $selectBox.on('click', function(e) {
+    		    e.stopPropagation();
+    		    $checkboxList.toggleClass('expanded');
+    		  });
+    		  
+    		  $checkboxList.on('click', function(e) {
+    			    e.stopPropagation();
+    			  });
+
+    		  // 체크박스 상태 변경 시 선택된 연도 목록 업데이트
+    		  $checkboxList.find('input[type=checkbox]').on('change', function() {
+    		    const selected = [];
+    		    $checkboxList.find('input[type=checkbox]:checked').each(function() {
+    		      selected.push($(this).parent().text().trim());
+    		    });
+    		    if (selected.length) {
+    		      $selectBox.text(selected.join(', '));
+    		    } else {
+    		      $selectBox.text('연도 선택');
+    		    }
+    		  });
+
+    		  // 외부 클릭 시 드롭다운 닫기
+    		  $(document).on('click', function() {
+    		    if ($checkboxList.hasClass('expanded')) {
+    		      $checkboxList.removeClass('expanded');
+    		      // 텍스트 업데이트 (선택된 항목 있으면 유지)
+    		      const selected = [];
+    		      $checkboxList.find('input[type=checkbox]:checked').each(function() {
+    		        selected.push($(this).parent().text().trim());
+    		      });
+    		      if (selected.length) {
+    		        $selectBox.text(selected.join(', '));
+    		      } else {
+    		        $selectBox.text('연도 선택');
+    		      }
+    		    }
+    		  });
+
+    		  // 키보드 접근성: 탭 키로 드롭다운 닫기
+    		  $multiSelect.on('keydown', function(e) {
+    		    if (e.key === 'Escape' || e.key === 'Tab') {
+    		      if ($checkboxList.hasClass('expanded')) {
+    		        $checkboxList.removeClass('expanded');
+    		        $selectBox.text('연도 선택');
+    		      }
+    		    }
+    		  });
+    		});
 
         toggleGraphVisibility(); // 그래프 표시 상태 초기화
 

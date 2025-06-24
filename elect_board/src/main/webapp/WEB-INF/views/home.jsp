@@ -342,7 +342,7 @@ const chart = new Chart(ctx, {
         datasets: [
             {   // 라인 차트 (예측) 먼저 작성 → 위로 표시됨
                 type: 'line',
-                label: '예측 월별 전력 사용량',
+                label: '실제 월별 전력 사용량',
                 data: predictionData,
                 borderColor: 'rgb(235, 79, 112)',
                 backgroundColor: 'rgb(235, 79, 112)',
@@ -357,7 +357,7 @@ const chart = new Chart(ctx, {
             },
             {   // 바 차트 (실제) 나중 작성 → 아래로 표시됨
                 type: 'bar',
-                label: '실제 월별 전력 사용량',
+                label: '예측 월별 전력 사용량',
                 data: usageData,
                 borderColor: [
                 	  'rgb(28, 61, 76)',    // 1월
@@ -719,15 +719,15 @@ totalChart = new Chart(totalCtx, {
     {
         label: '실제 총 사용량',
         data: [0],
-        backgroundColor: 'rgb(58, 91, 106)',
-        borderColor: 'rgb(58, 91, 106)',
+        backgroundColor: 'rgb(235, 79, 112)',
+        borderColor: 'rgb(235, 79, 112)',
         borderWidth: 1
     },
     {
         label: '예측 총 사용량',
         data: [0],
-        backgroundColor: 'rgb(235, 79, 112)',
-        borderColor: 'rgb(235, 79, 112)',
+        backgroundColor: 'rgb(180, 200, 210)',
+        borderColor: 'rgb(180, 200, 210)',
         borderWidth: 1
     }
     ]
