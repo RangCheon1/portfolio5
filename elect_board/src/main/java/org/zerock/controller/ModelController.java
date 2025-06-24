@@ -139,6 +139,41 @@ public class ModelController {
         return result;
     }
     
+ // 단기 예측 배치 요청 처리 (FastAPI로 POST 요청)
+    @PostMapping(value = "/modelShortBatch", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public Map<String, Object> predictShortBatchJson(@RequestBody Map<String, Object> request) {
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://localhost:8000/model/short_batch"; // FastAPI 배치 엔드포인트
+
+        // FastAPI에 넘길 데이터 준비
+        Object requestsObj = request.get("requests");
+        if (requestsObj == null) {
+            throw new IllegalArgumentException("Missing 'requests' in request body");
+        }
+
+        Map<String, Object> sendData = new HashMap<>();
+        sendData.put("requests", requestsObj); // 그대로 넘긴다 (JS에서 이미 배열 형태임)
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(sendData, headers);
+
+        // FastAPI 호출
+        ResponseEntity<Map> response = restTemplate.postForEntity(url, entity, Map.class);
+
+        Map<String, Object> result = new HashMap<>();
+        if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            result = response.getBody(); // {"predictions": {...}} 형태 그대로 반환
+        } else {
+            throw new IllegalStateException("Failed to get batch prediction from FastAPI");
+        }
+
+        return result;
+    }
+
+    
     // 전력 사용량 조회
     @GetMapping("/getPrevUsage")
     @ResponseBody
