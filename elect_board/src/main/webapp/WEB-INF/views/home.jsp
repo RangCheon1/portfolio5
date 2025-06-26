@@ -14,6 +14,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 <script src="//code.jquery.com/jquery-migrate-3.5.0.min.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <header>
@@ -25,7 +26,7 @@
         	<td id="two"><p class="navi">View Details</p></td>
         </tr>
         <tr>
-        	<td id="three"><p class="navi">Download</a></p></td>
+        	<td id="three"><p class="navi">Download</p></td>
         </tr>
         </table>
 </header>
@@ -274,6 +275,8 @@
         <div class="form-group">
             <button id="searchBtn" type="button">조회</button>
             <button id="downloadBtn" type="button">그래프 다운로드</button>
+            <button id="downloadExcelBtn" type="button">엑셀 다운로드</button>
+			<button id="downloadCsvBtn" type="button">CSV 다운로드</button>
         </div>
     </div>
 
@@ -455,6 +458,7 @@ function drawActualUsageChart(chartData) {
     'rgba(255, 159, 64, 0.5)'
   ];
 
+  // 여기서 각 데이터셋에 hidden 속성을 넣어 첫 번째만 보이고 나머지는 숨김 처리
   const datasets = filteredData.map((item, idx) => ({
     label: item.year + "년 " + item.region,
     data: item.monthlyData,
@@ -463,7 +467,8 @@ function drawActualUsageChart(chartData) {
     borderWidth: 2,
     type: chartType,
     fill: chartType === 'line' ? false : true,
-    tension: 0.3
+    tension: 0.3,
+    hidden: idx !== 0  // 첫 번째 데이터셋만 보이도록, 나머지는 숨김
   }));
 
   if (usageChart) usageChart.destroy();
@@ -490,7 +495,8 @@ function drawActualUsageChart(chartData) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: '월별 전력 사용량' },
+        title: { display: true, text: ['장기 예측 사용량 vs 실제 사용량', '범례 클릭 시 다른 연도 사용값이 표시됩니다'],padding: { top: 10, bottom: 10 },
+            font: { size: 12 } },
         legend: { position: 'top' }
       },
       scales: {
@@ -502,6 +508,7 @@ function drawActualUsageChart(chartData) {
     }
   });
 }
+
 
 // 전년도 사용량 가져오기
 async function fetchPrevUsage(region, year, month) {
@@ -573,132 +580,135 @@ async function fetchShortTermPrediction(year, region, actualMonthlyData) {
 
 // 단기 예측 차트 그리기
 async function drawPredictedUsageChart(chartData) {
-const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
-const selectedRegion = document.querySelector('select[name="region"]').value;
+  const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
+  const selectedRegion = document.querySelector('select[name="region"]').value;
 
-const canvas = document.getElementById('predictedChart');
-const predictedContainer = canvas.parentElement;
-const overlayId = 'predictedChartOverlay';
-let overlay = document.getElementById(overlayId);
+  const canvas = document.getElementById('predictedChart');
+  const predictedContainer = canvas.parentElement;
+  const overlayId = 'predictedChartOverlay';
+  let overlay = document.getElementById(overlayId);
 
-if (!overlay) {
- overlay = document.createElement('div');
- overlay.id = overlayId;
- overlay.className = 'chart-overlay';
- predictedContainer.appendChild(overlay);
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = overlayId;
+    overlay.className = 'chart-overlay';
+    predictedContainer.appendChild(overlay);
+  }
+
+  if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
+    overlay.textContent = '지역,연도를 선택해주세요.';
+    overlay.classList.add('show');
+    canvas.classList.add('blur');
+    if (predictedChart) {
+      predictedChart.destroy();
+      predictedChart = null;
+    }
+    return;
+  }
+
+  // 2026년 3월까지 예측 가능 체크
+  if (selectedYears.some(year => Number(year) > 2027) || selectedYears.includes('2027')) {
+    overlay.textContent = '2026년 3월까지 예측이 가능합니다.';
+    overlay.classList.add('show');
+    canvas.classList.add('blur');
+    if (predictedChart) {
+      predictedChart.destroy();
+      predictedChart = null;
+    }
+    return;
+  }
+
+  overlay.classList.remove('show');
+  canvas.classList.remove('blur');
+
+  const yearSet = new Set(), regionSet = new Set();
+  chartData.forEach(d => {
+    yearSet.add(String(d.year));
+    regionSet.add(d.region);
+  });
+
+  const years = Array.from(yearSet).sort();
+  const regions = Array.from(regionSet).sort();
+  const datasets = [];
+  const predictionPromises = [];
+
+  function findActualData(region, year) {
+    return chartData.find(d => d.region === region && String(d.year) === String(year));
+  }
+
+  regions.forEach(region => {
+    years.forEach(year => {
+      const actualDataObj = findActualData(region, year);
+      if (!actualDataObj) return;
+
+      predictionPromises.push(
+        fetchShortTermPrediction(Number(year), region, actualDataObj.monthlyData)
+          .then(predictedArray => ({
+            year,
+            region,
+            predictedArray,
+            actualData: actualDataObj.monthlyData
+          }))
+      );
+    });
+  });
+
+  const allPredictions = await Promise.all(predictionPromises);
+
+  const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
+  const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+  allPredictions.forEach((pred, idx) => {
+    const labelPrefix = pred.year + "년 " + pred.region;
+
+    datasets.push({
+      label: labelPrefix + " 예측",
+      data: pred.predictedArray,
+      backgroundColor: colors[idx % colors.length],
+      borderColor: colors[idx % colors.length],
+      borderWidth: 2,
+      type: 'line',
+      fill: false,
+      tension: 0.3,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      hidden: idx !== 0  // 첫 번째만 보이도록 설정
+    });
+
+    datasets.push({
+      label: labelPrefix + " 실제",
+      data: pred.actualData,
+      backgroundColor: colors[idx % colors.length].replace('1)', '0.3)'),
+      borderColor: colors[idx % colors.length].replace('1)', '0.5)'),
+      borderWidth: 1,
+      type: 'bar',
+      barPercentage: 0.4,
+      categoryPercentage: 0.5,
+      hidden: idx !== 0  // 첫 번째만 보이도록 설정
+    });
+  });
+
+  const ctx = canvas.getContext('2d');
+  if (predictedChart) predictedChart.destroy();
+  predictedChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: ['단기 예측 사용량 vs 실제 사용량','범례 클릭 시 다른 연도 사용값이 표시됩니다'],padding: { top: 10, bottom: 10 },font: { size: 12 } },
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: {
+          title: { display: true, text: '사용량 (gWh)' }
+        }
+      }
+    }
+  });
 }
 
-if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
- overlay.textContent = '지역,연도를 선택해주세요.';
- overlay.classList.add('show');
- canvas.classList.add('blur');
- if (predictedChart) {
-   predictedChart.destroy();
-   predictedChart = null;
- }
- return;
-}
-
-// 2026년 3월까지 예측 가능 체크
-if (selectedYears.some(year => Number(year) > 2027) || selectedYears.includes('2027')) {
- overlay.textContent = '2026년 3월까지 예측이 가능합니다.';
- overlay.classList.add('show');
- canvas.classList.add('blur');
- if (predictedChart) {
-   predictedChart.destroy();
-   predictedChart = null;
- }
- return;
-}
-
-overlay.classList.remove('show');
-canvas.classList.remove('blur');
-
-const yearSet = new Set(), regionSet = new Set();
-chartData.forEach(d => {
- yearSet.add(String(d.year));
- regionSet.add(d.region);
-});
-
-const years = Array.from(yearSet).sort();
-const regions = Array.from(regionSet).sort();
-const datasets = [];
-const predictionPromises = [];
-
-function findActualData(region, year) {
- return chartData.find(d => d.region === region && String(d.year) === String(year));
-}
-
-regions.forEach(region => {
- years.forEach(year => {
-   const actualDataObj = findActualData(region, year);
-   if (!actualDataObj) return;
-
-   predictionPromises.push(
-     fetchShortTermPrediction(Number(year), region, actualDataObj.monthlyData)
-       .then(predictedArray => ({
-         year,
-         region,
-         predictedArray,
-         actualData: actualDataObj.monthlyData
-       }))
-   );
- });
-});
-
-const allPredictions = await Promise.all(predictionPromises);
-
-const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
-const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-
-allPredictions.forEach((pred, idx) => {
- const labelPrefix = pred.year + "년 " + pred.region;
-
- datasets.push({
-   label: labelPrefix + " 예측",
-   data: pred.predictedArray,
-   backgroundColor: colors[idx % colors.length],
-   borderColor: colors[idx % colors.length].replace('0.7', '1'),
-   borderWidth: 2,
-   type: 'line',
-   fill: false,
-   tension: 0.3,
-   pointRadius: 3,
-   pointHoverRadius: 6,
- });
-
- datasets.push({
-   label: labelPrefix + " 실제",
-   data: pred.actualData,
-   backgroundColor: colors[idx % colors.length].replace('0.7', '0.3'),
-   borderColor: colors[idx % colors.length].replace('0.7', '0.5'),
-   borderWidth: 1,
-   type: 'bar',
-   barPercentage: 0.4,
-   categoryPercentage: 0.5,
- });
-});
-
-const ctx = canvas.getContext('2d');
-if (predictedChart) predictedChart.destroy();
-predictedChart = new Chart(ctx, {
- type: 'bar',
- data: { labels, datasets },
- options: {
-   responsive: true,
-   maintainAspectRatio: false,
-   plugins: {
-     title: { display: true, text: '단기 예측 사용량 vs 실제 사용량' },
-     legend: { position: 'top' }
-   },
-   scales: {
-     y: {
-       title: { display: true, text: '사용량 (gWh)' }
-     }
-   }
- }
-});
-}
 
 // 장기 예측 API 호출
 async function fetchLongTermPrediction(year, region, actualMonthlyData) {
@@ -745,127 +755,129 @@ return preds;
 
 // 장기 예측 차트 그리기
 async function drawLongTermUsageChart(chartData) {
-const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
-const selectedRegion = document.querySelector('select[name="region"]').value;
+  const selectedYears = Array.from(document.querySelectorAll('input[name="years"]:checked')).map(input => input.value);
+  const selectedRegion = document.querySelector('select[name="region"]').value;
 
-const canvas = document.getElementById('longTermChart');
-const chartContainer = canvas.parentElement;
-const overlayId = 'longTermChartOverlay';
-let overlay = document.getElementById(overlayId);
+  const canvas = document.getElementById('longTermChart');
+  const chartContainer = canvas.parentElement;
+  const overlayId = 'longTermChartOverlay';
+  let overlay = document.getElementById(overlayId);
 
-if (!overlay) {
- overlay = document.createElement('div');
- overlay.id = overlayId;
- overlay.className = 'chart-overlay';
- chartContainer.appendChild(overlay);
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = overlayId;
+    overlay.className = 'chart-overlay';
+    chartContainer.appendChild(overlay);
+  }
+
+  if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
+    overlay.textContent = '지역,연도를 선택해주세요.';
+    overlay.classList.add('show');
+    canvas.classList.add('blur');
+    if (longTermChart) {
+      longTermChart.destroy();
+      longTermChart = null;
+    }
+    return;
+  }
+
+  overlay.classList.remove('show');
+  canvas.classList.remove('blur');
+
+  const yearSet = new Set(), regionSet = new Set();
+  chartData.forEach(d => {
+    yearSet.add(String(d.year));
+    regionSet.add(d.region);
+  });
+
+  const years = Array.from(yearSet).sort();
+  const regions = Array.from(regionSet).sort();
+  const filteredRegions = selectedRegion === 'all' ? regions : [selectedRegion];
+  const filteredYears = selectedYears;
+
+  const predictionPromises = [];
+
+  function findActualData(region, year) {
+    return chartData.find(d => d.region === region && String(d.year) === String(year));
+  }
+
+  filteredRegions.forEach(region => {
+    filteredYears.forEach(year => {
+      const actualDataObj = findActualData(region, year);
+      if (!actualDataObj) return;
+
+      predictionPromises.push(
+        fetchLongTermPrediction(Number(year), region, actualDataObj.monthlyData)
+          .then(predictedArray => ({
+            year,
+            region,
+            predictedArray,
+            actualData: actualDataObj.monthlyData
+          }))
+      );
+    });
+  });
+
+  const allPredictions = await Promise.all(predictionPromises);
+
+  const colors = ['rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
+  const datasets = [];
+  const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+  allPredictions.forEach((pred, idx) => {
+    const labelPrefix = pred.year + "년 " + pred.region;
+
+    datasets.push({
+      label: labelPrefix + " 예측",
+      data: pred.predictedArray,
+      backgroundColor: colors[idx % colors.length],
+      borderColor: colors[idx % colors.length],
+      borderWidth: 2,
+      type: 'line',
+      fill: false,
+      tension: 0.3,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      hidden: idx !== 0  // 첫 번째 쌍만 보이고 나머지는 숨김
+    });
+
+    datasets.push({
+      label: labelPrefix + " 실제",
+      data: pred.actualData,
+      backgroundColor: colors[idx % colors.length].replace('1)', '0.3)'),
+      borderColor: colors[idx % colors.length].replace('1)', '0.5)'),
+      borderWidth: 1,
+      type: 'bar',
+      barPercentage: 0.4,
+      categoryPercentage: 0.5,
+      hidden: idx !== 0  // 첫 번째 쌍만 보이고 나머지는 숨김
+    });
+  });
+
+  const ctx = canvas.getContext('2d');
+  if (longTermChart) longTermChart.destroy();
+  longTermChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        title: { display: true, text: ['장기 예측 사용량 vs 실제 사용량', '범례 클릭 시 다른 연도 사용값이 표시됩니다'], padding: { top: 10, bottom: 10 }, font: { size: 12 } },
+        legend: { position: 'top' }
+      },
+      scales: {
+        y: {
+          title: { display: true, text: '사용량 (gWh)' }
+        }
+      }
+    }
+  });
 }
 
-if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
- overlay.textContent = '지역,연도를 선택해주세요.';
- overlay.classList.add('show');
- canvas.classList.add('blur');
- if (longTermChart) {
-   longTermChart.destroy();
-   longTermChart = null;
- }
- return;
-}
-
-overlay.classList.remove('show');
-canvas.classList.remove('blur');
-
-const yearSet = new Set(), regionSet = new Set();
-chartData.forEach(d => {
- yearSet.add(String(d.year));
- regionSet.add(d.region);
-});
-
-const years = Array.from(yearSet).sort();
-const regions = Array.from(regionSet).sort();
-const filteredRegions = selectedRegion === 'all' ? regions : [selectedRegion];
-const filteredYears = selectedYears;
-
-const predictionPromises = [];
-
-function findActualData(region, year) {
- return chartData.find(d => d.region === region && String(d.year) === String(year));
-}
-
-filteredRegions.forEach(region => {
- filteredYears.forEach(year => {
-   const actualDataObj = findActualData(region, year);
-   if (!actualDataObj) return;
-
-   predictionPromises.push(
-     fetchLongTermPrediction(Number(year), region, actualDataObj.monthlyData)
-       .then(predictedArray => ({
-         year,
-         region,
-         predictedArray,
-         actualData: actualDataObj.monthlyData
-       }))
-   );
- });
-});
-
-const allPredictions = await Promise.all(predictionPromises);
-
-const colors = ['rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
-const datasets = [];
-
-const labels = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-
-allPredictions.forEach((pred, idx) => {
- const labelPrefix = pred.year + "년 " + pred.region;
-
- datasets.push({
-   label: labelPrefix + " 예측",
-   data: pred.predictedArray,
-   backgroundColor: colors[idx % colors.length],
-   borderColor: colors[idx % colors.length].replace('0.7', '1'),
-   borderWidth: 2,
-   type: 'line',
-   fill: false,
-   tension: 0.3,
-   pointRadius: 3,
-   pointHoverRadius: 6,
- });
-
- datasets.push({
-   label: labelPrefix + " 실제",
-   data: pred.actualData,
-   backgroundColor: colors[idx % colors.length].replace('0.7', '0.3'),
-   borderColor: colors[idx % colors.length].replace('0.7', '0.5'),
-   borderWidth: 1,
-   type: 'bar',
-   barPercentage: 0.4,
-   categoryPercentage: 0.5,
- });
-});
-
-const ctx = canvas.getContext('2d');
-if (longTermChart) longTermChart.destroy();
-longTermChart = new Chart(ctx, {
- type: 'bar',
- data: {
-   labels,
-   datasets
- },
- options: {
-   responsive: true,
-   maintainAspectRatio: false,
-   plugins: {
-     title: { display: true, text: '장기 예측 사용량 vs 실제 사용량' },
-     legend: { position: 'top' }
-   },
-   scales: {
-     y: {
-       title: { display: true, text: '사용량 (gWh)' }
-     }
-   }
- }
-});
-}
 
 // 선택된 연도, 지역 화면에 표시
 function updateSelectedInfo(years, region) {
@@ -1039,6 +1051,67 @@ window.addEventListener('DOMContentLoaded', () => {
         break;
     }
   });
+  
+  
+  
+  
+//차트 데이터를 엑셀/CSV용 2차원 배열로 변환
+  function prepareTableDataForExport(data) {
+    // data: [{year, region, monthlyData:[12개]}]
+    // 1행: 년도, 지역, 1월, 2월, ..., 12월
+    const header = ['년도', '지역', ...monthLabels];
+    const rows = data.map(item => [
+      item.year,
+      item.region,
+      ...item.monthlyData.map(v => v ?? '')
+    ]);
+    return [header, ...rows];
+  }
+
+  // 엑셀(.xlsx) 다운로드
+  function downloadExcel(data, filename = '전력사용량.xlsx') {
+    const ws_data = prepareTableDataForExport(data);
+    const ws = XLSX.utils.aoa_to_sheet(ws_data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, '전력사용량');
+    XLSX.writeFile(wb, filename);
+  }
+
+  // CSV 다운로드
+  function downloadCSV(data, filename = '전력사용량.csv') {
+  const ws_data = prepareTableDataForExport(data);
+  const csvContent = XLSX.utils.sheet_to_csv(XLSX.utils.aoa_to_sheet(ws_data));
+
+  // UTF-8 BOM 추가 (한글 깨짐 방지)
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csvContent], {type: 'text/csv;charset=utf-8;'});
+
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(link.href);
+}
+  
+  
+  document.getElementById('downloadExcelBtn').addEventListener('click', () => {
+	  if (!globalChartData || globalChartData.length === 0) {
+	    alert('다운로드할 데이터가 없습니다.');
+	    return;
+	  }
+	  downloadExcel(globalChartData);
+	});
+
+	document.getElementById('downloadCsvBtn').addEventListener('click', () => {
+	  if (!globalChartData || globalChartData.length === 0) {
+	    alert('다운로드할 데이터가 없습니다.');
+	    return;
+	  }
+	  downloadCSV(globalChartData);
+	});
+  
+  
+  
 });
 
 
