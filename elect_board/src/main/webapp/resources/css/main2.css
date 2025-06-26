@@ -1,0 +1,236 @@
+@charset "UTF-8";
+*{color: #ececec;}
+/* box-sizing */
+div {
+	box-sizing: border-box;
+}
+
+/* 2페이지*/
+/* 2페이지 배경색*/
+
+/* 2페이지 크기 설정*/
+.fullwide{
+	width: 88vw; height: 99vh;
+	display: flex;
+	overflow: hidden;
+}
+
+/* 1번박스*/
+.left{
+	width:445px;
+	height:960px;
+	overflow:hidden;
+	display: flex;
+	flex-wrap: wrap;
+}
+/* 2번박스*/
+.up{
+	width: 755px;
+	height:960px;	
+	display: flex;
+	flex-wrap: wrap;
+	overflow:hidden;
+}
+/* 3번박스 */
+.middle.right{
+	width: 480px;
+	height: 960px;
+	display: flex;
+	flex-wrap: wrap;
+	overflow:hidden;
+}
+
+/* 지도박스 */
+.middle.map {
+	overflow: hidden;
+	margin-left: 25px;
+	height: 617px;
+	width:445px;
+}
+
+/* 지도 설정 */
+.svg-map {
+	position: absolute;
+	padding:0;
+	z-index: 1;
+	top: -30px;
+	left: -35px;
+	padding-top:40px;
+	width: 500px;
+	height: 690px;
+}
+
+/* 지도 위에 마킹 */
+.oversvg {
+	z-index: 2; /* 더 높은 z-index로 겹쳐짐 */
+	position: absolute;
+	top: 10px;
+	left: 0px;
+	pointer-events: none; /* 클릭은 SVG가 받도록 */
+	width: 700px;
+	height: 750px;
+}
+
+/* 연도 버튼 박스 */
+.left-down{
+margin-top:6px;
+height:395px;
+width:445px;
+}
+.year-buttons{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+}
+#year-table{
+width:443px;
+height:390px;
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+margin:0;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+}
+.year-btn{
+box-sizing: border-box;
+align-items: center;
+width:100px;
+height:56px;
+margin:3px;
+background-color:rgba(0, 0, 0, 0.5);
+color:white;
+font-size:21px;
+font-weight:bold;
+border-radius:5px;
+border: 1px solid rgb(15, 25, 50);
+}
+.year-btn:hover{
+	transform: scale(1.05);
+  	box-shadow: 0 4px 8px rgba(15, 25, 50, 0.6);
+}
+
+/* div 배경 */
+.chart,.down{
+	background-color:rgba(0, 0, 0, 0.5);
+	border-radius: 10px;
+	padding-left: 20px; padding-right: 20px; margin-top: 10px;
+}
+
+/* 1번차트 박스*/
+.chart {
+	height: 580px;
+	width: 740px;
+}
+.explain-box{
+	position:absolute;
+    margin-top:5px;
+    right: 0px;
+    padding:12px 14px;
+    border:1px solid #888;
+    border-radius:8px;
+    background:#fefefe;
+    font-size:14px;
+    line-height:1.4;
+    width:414px;
+    box-shadow:2px 2px 4px rgba(0,0,0,0.7);
+}
+.select2{
+	border-radius:5px;
+	font-size:14px;
+	padding-left:3px;
+	height:19px;
+}
+.select-label2{
+	font-size:15px;
+}
+.explain-button{
+	background-color:#eeeeee;
+	border-radius:30px;
+	border:1px solid black;
+}
+.explain-button:active{
+	background-color:#aaaaaa;
+}
+#usageTitle {
+	display: inline-block;
+}
+#selectBox {
+	display: inline-block;
+	padding-left: 165px;
+}
+#usageChart{
+margin-top:35px;
+}
+option{
+color:black;
+}
+
+/* 2번차트 박스*/
+.down{
+	width: 740px;
+	height: 330px;
+}
+#t-text-container{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	padding-left:105px;
+	width:763px;
+}
+.t-text{
+	position: relative;
+	display: inline-block;
+	vertical-align: top;
+	height:80px;
+	text-align:center;
+	width:150px;
+}
+.tt1{
+
+}
+.tt2{
+	margin-left:130px;
+}
+#totalUse{
+	color:rgb(255, 99, 132);
+}
+#totalPre{
+	color:rgb(180, 200, 210);
+}
+.t-h2{
+	margin-top:10px;
+	margin-bottom:0px;
+	font-size:30px;
+}
+#totalChart{
+	margin-top:0px;
+}
+.annotation{
+	color:#dfdfdf;
+	font-size:12px;
+}
+#totalTitle{
+	display: inline-block;
+	margin-bottom:0px;
+}
+
+/* 원형차트 박스*/
+.left-up{
+margin: 0 auto;
+height:460px;
+width:460px;
+display: flex;                /* Flexbox 사용 */
+flex-direction: column;      /* 세로 정렬 (텍스트 + 차트) */
+align-items: center;         /* 가로 중앙 정렬 */
+justify-content: center;     /* 세로 중앙 정렬 */
+text-align: center;          /* 텍스트 가운데 정렬 */
+}
+.donut-title{
+position:absolute;
+margin:0;
+font-size:20px;
+font-weight:bold;
+text-align:center;
+}

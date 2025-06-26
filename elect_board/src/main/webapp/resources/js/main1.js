@@ -1,19 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>ShortModel</title>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/main1.css" />
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-<script>
 	$(document).ready(function(){
 		let today = new Date();
 	    let year = today.getFullYear();
 	    let month = today.getMonth() + 1;
-	    let nowMonthAll = 0.00;
+	    let nowMonthAll = 0.00; // 이번달 전력사용량 총합
+	    let nextMonthAll = 0.00; // 다음달 전력사용량 총합
 	    let prevAllUsage; // 전년도 1~12월 값
 	    let yearAllUsage; // 올해 1~12월 값
 	    let month4Years // 이번달 4년치 값
@@ -27,22 +17,80 @@
 		
 	 	// 메뉴 안에 예측값 넣기
 	    async function setPredictionToMenu() {
-	        const menus = $('.menu').not('#month'); // '전체' 제외
+	        let menus = $('.menu').not('#month'); // '전체' 제외
 
 	        for (let i = 0; i < menus.length; i++) {
-	            const $this = $(menus[i]);
+	            let $this = $(menus[i]);
 	            try {
-	                const prediction = await predictAndReturnCorrect($this, year, month);
+	                let prediction = await predictAndReturnCorrect($this, year, month);
 	                $this.find('p').text(prediction + ' GWh');
-	                nowMonthAll = nowMonthAll + prediction;
 	            } catch (error) {
 	                $this.find('p').text(error); // '예측 오류' 또는 '도시코드 없음'
 	            }
 	        }
 	    }
-
 	    // 호출
 	    setPredictionToMenu();
+	    
+	    // 이번달 전력 사용량 총합
+		async function thisMonthTotalUsage() {
+    		let menus = $('.menu').not('#month');
+   			let requestList = menus.map(function() {
+        		let $this = $(this);
+        		let cityCode = $this.data('citycode');
+        		return getPreviousUsagePromise($this, year - 1, month)
+            		.then(prevUsage => {
+                		return {
+                    		city_encoded: cityCode,
+                    		year: year - 2014,
+                    		month: month,
+                    		prev_usage: prevUsage
+                		};
+            		});
+    		}).get();
+
+    		let requests = await Promise.all(requestList); // 전년도 사용량까지 모두 해결됨
+
+    		let response = await $.ajax({
+        		url: '/modelShortBatch',
+      		  	method: 'POST',
+    		    contentType: 'application/json',
+        		data: JSON.stringify({ requests: requests })
+    		});
+
+    		// FastAPI가 돌려준 predictions 사용
+    		nowMonthAll = Object.values(response.predictions).reduce((sum, val) => sum + val, 0);
+		}
+
+		// 다음달 전력 사용량 총합 (배치 요청 버전)
+		async function nextMonthTotalUsage() {
+		    let menus = $('.menu').not('#month');
+		    let requestList = menus.map(function() {
+		        let $this = $(this);
+		        let cityCode = $this.data('citycode');
+		        return getPreviousUsagePromise($this, year - 1, month + 1)  // 전년도 다음달 사용량
+		            .then(prevUsage => {
+		                return {
+		                    city_encoded: cityCode,
+		                    year: year - 2014,
+		                    month: month + 1,
+		                    prev_usage: prevUsage
+		                };
+		            });
+		    }).get();
+
+		    let requests = await Promise.all(requestList);
+
+		    let response = await $.ajax({
+		        url: '/modelShortBatch',
+		        method: 'POST',
+		        contentType: 'application/json',
+		        data: JSON.stringify({ requests: requests })
+		    });
+
+		    nextMonthAll = Object.values(response.predictions).reduce((sum, val) => sum + val, 0);
+		}
+
 	    
 	 	// 전력 사용량 조회 함수
 	    function getPreviousUsage($element, year, month, callback) {
@@ -77,15 +125,15 @@
 	 	
 		// 4년치 월 데이터 가져오기 (예: 2021~2024)
 	    async function getPast4YearsJuneUsage($element, thisYear) {
-	        const promises = [];
+	        let promises = [];
 
 	        for (let i = 4; i >= 1; i--) {
-	            const yearToFetch = thisYear - i; // 4년 전부터 1년 전까지
+	            let yearToFetch = thisYear - i; // 4년 전부터 1년 전까지
 	            promises.push(getPreviousUsagePromise($element, yearToFetch, month));
 	        }
 
 	        try {
-	            const usageArray = await Promise.all(promises);
+	            let usageArray = await Promise.all(promises);
 	            return usageArray;
 	        } catch (err) {
 	            console.error("4년치 "+month+"월 사용량 조회 실패:", err);
@@ -114,12 +162,12 @@
 	 	
 		// 단기 예측 Promise 버전 (전년도 사용량도 Promise로 처리)
 		async function predictAndReturnCorrect($element, year, month) {
-		    const cityCode = $element.data('citycode');
+		    let cityCode = $element.data('citycode');
 		    if (cityCode === undefined) throw '도시코드 없음';
 
 		    try {
-		        const prevUsage = await getPreviousUsagePromise($element, year - 1, month); // 전년도 값
-		        const prediction = await $.ajax({
+		        let prevUsage = await getPreviousUsagePromise($element, year - 1, month); // 전년도 값
+		        let prediction = await $.ajax({
 		            url: '/modelShort',
 		            method: 'POST',
 		            contentType: 'application/json',
@@ -136,6 +184,108 @@
 		    }
 		}
 	 	
+		// 단기 예보 호출
+		function fetchWeatherForClickedMenu($clickedMenu) {
+		  var selectedCityCode = $clickedMenu.data('citycode');
+		  var currentDate = new Date();
+		  var currentYear = currentDate.getFullYear();
+		  var currentMonth = (currentDate.getMonth() + 1);
+		  if (currentMonth < 10) currentMonth = '0' + currentMonth;
+		  var currentDay = currentDate.getDate();
+		  if (currentDay < 10) currentDay = '0' + currentDay;
+		  var formattedDate = currentYear + '' + currentMonth + '' + currentDay;
+
+		  if (!selectedCityCode || !formattedDate) {
+		    console.error("도시코드 또는 날짜가 유효하지 않습니다.");
+		    return;
+		  }
+
+		  $.ajax({
+		    url: '/weather/short',
+		    method: 'GET',
+		    dataType: 'json',
+		    data: {
+		      citycode: selectedCityCode,
+		      baseDate: formattedDate
+		    },
+		    success: function(response) {
+		      var dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+		      for (var i = 0; i < response.length && i < 4; i++) {
+		        var item = response[i];
+		        var dateObj = new Date(item.date);
+		        var month = dateObj.getMonth() + 1;
+		        var day = dateObj.getDate();
+		        var weekDay = dayNames[dateObj.getDay()];
+
+		        if (month < 10) month = '0' + month;
+		        if (day < 10) day = '0' + day;
+
+		        var formattedDateStr = month + '/' + day + ' (' + weekDay + ')';
+
+		        var weatherDesc = (item.precipitation === '없음') ? item.sky : item.precipitation;
+		        var emoji = getWeatherEmoji(weatherDesc);
+
+		        var usage = predictUsage(parseInt(item.maxTemperature), weatherDesc, dateObj.getMonth() + 1);
+
+		        var row = $('#day' + (i + 1));
+		        row.find('td').eq(0).text(formattedDateStr);
+		        row.find('td').eq(1).text(emoji + ' ' + weatherDesc);
+		        row.find('td').eq(2).text(item.minTemperature + '℃');
+		        row.find('td').eq(3).text(item.maxTemperature + '℃');
+		        row.find('td').eq(4).attr('class', usage.cssClass).text(usage.text);
+		      }
+		    },
+		    error: function(xhr, status, error) {
+		      console.error('에러 발생:', error);
+		      console.log(xhr.responseText);
+		    }
+		  });
+		}
+		// 날씨 → 이모지 매핑 함수
+		function getWeatherEmoji(desc) {
+		  var emojiMap = {
+		    '맑음': '☀️',
+		    '구름많음': '🌤️',
+		    '흐림': '☁️',
+		    '비': '🌧️',
+		    '비/눈': '🌧️/❄️',
+		    '눈': '❄️',
+		    '소나기': '🌦️'
+		  };
+		  return emojiMap[desc] || '❓';
+		}
+		// 전기사용량 예측 판단 함수 (계절별 적용)
+		function predictUsage(maxTemp, weather, month) {
+		  var isSummer = (month >= 6 && month <= 8);
+		  var isWinter = (month === 12 || month === 1 || month === 2);
+
+		  if (isWinter && weather === '눈') {
+		    return { text: '증가 예상 ↑', cssClass: 'increase' };
+		  }
+		  if (isSummer && maxTemp >= 28) {
+		    return { text: '증가 예상 ↑', cssClass: 'increase' };
+		  }
+		  if (isWinter && maxTemp <= 5) {
+		    return { text: '증가 예상 ↑', cssClass: 'increase' };
+		  }
+		  if (weather === '비') {
+		    if (isSummer) {
+		      return { text: '감소 예상 ↓', cssClass: 'decrease' };
+		    }
+		    return { text: '유지 예상 →', cssClass: 'neutral' };
+		  }
+		  if (maxTemp <= 10) {
+		    return { text: '감소 예상 ↓', cssClass: 'decrease' };
+		  }
+		  if (maxTemp >= 30) {
+		    return { text: '증가 예상 ↑', cssClass: 'increase' };
+		  }
+
+		  return { text: '유지 예상 →', cssClass: 'neutral' };
+		}
+
+		
 	 	// 메뉴 클릭 이벤트
 		$(".menu").on("click", async function() {
 		    let $element = $(this);
@@ -151,7 +301,6 @@
 		    // 전년도 1월 ~ 12월 데이터 가져오기
 		    try {
 		        prevAllUsage = await getPrevAllUsagePromise($element, year-1);
-		        console.log("전년도 사용량:", prevAllUsage);
 		    } catch(err) {
 		        console.error(err);
 		    }
@@ -159,7 +308,6 @@
 		    // 올해 1월 ~ 12월 데이터 가져오기
 		    try {
 		        yearAllUsage = await getPrevAllUsagePromise($element, year);
-		        console.log("이번년도 사용량(원본):", yearAllUsage);
 		    } catch(err) {
 		        console.error(err);
 		    }
@@ -168,18 +316,16 @@
 		    for (let i = 0; i < 12; i++) {
 		        if (!yearAllUsage[i] || yearAllUsage[i] === 0) {
 		            try {
-		                const predicted = await predictAndReturnCorrect($element, year, i + 1);
+		                let predicted = await predictAndReturnCorrect($element, year, i + 1);
 		                yearAllUsage[i] = predicted;
 		            } catch (err) {
 		                console.error(err);
 		            }
 		        }
 		    }
-		    console.log("이번년도 사용량(완성본):", yearAllUsage)
 		    
 		    // 4년치 월 사용량 가져오기
 		    month4Years = await getPast4YearsJuneUsage($element, year);
-		    console.log("4년치"+month+"월 사용량:", month4Years);
 		    
 		    // char2 라벨
 			for (let i = monthCount - 1; i >= 0; i--) {
@@ -224,7 +370,10 @@
 			                borderColor: [
 			                	'rgb(58, 91, 106)'
 			                ],
-			                borderWidth: 1
+			                borderWidth: 1,
+			                datalabels: {
+			                    display: false
+			                  }
 		                },
 		            	{
 			                label: year+"년",
@@ -237,7 +386,10 @@
 			                borderColor: [
 			                    'rgb(178, 211, 226)'
 			                ],
-			                borderWidth: 1
+			                borderWidth: 1,
+			                datalabels: {
+			                    display: false
+			                  }
 		                }
 		            	]
 		        },
@@ -294,7 +446,10 @@
 		    		plugins: {
 		    			legend: {
 		                    display: false   // 범례
-		                }
+		                },
+		          	  	datalabels: {
+		                    display: false
+		                  }
 		    		},
 		            scales: {
 		                x: {
@@ -326,17 +481,17 @@
 		                data: [month4Years[0], month4Years[1], month4Years[2], month4Years[3],
 		                	yearAllUsage[month-1]],
 		                backgroundColor: [
-		                	'rgb(58, 91, 106)',
-		                	'rgb(88, 121, 136)',
-		                	'rgb(118, 151, 166)',
-		                	'rgb(148, 181, 196)',
+		                	'rgb(28, 61, 76)',
+		                	'rgb(67, 97, 117)',
+		                	'rgb(107, 134, 157)',
+		                	'rgb(147, 172, 191)',
 		                	'rgb(178, 211, 226)',
 		                ],
 		                borderColor: [
-		                	'rgb(58, 91, 106)',
-		                	'rgb(88, 121, 136)',
-		                	'rgb(118, 151, 166)',
-		                	'rgb(148, 181, 196)',
+		                	'rgb(28, 61, 76)',
+		                	'rgb(67, 97, 117)',
+		                	'rgb(107, 134, 157)',
+		                	'rgb(147, 172, 191)',
 		                	'rgb(178, 211, 226)',
 		                ],
 		                borderWidth: 1
@@ -346,7 +501,10 @@
 		    		plugins: {
 		    			legend: {
 		                    display: false   // 범례
-		                }
+		                },
+		          	  	datalabels: {
+		                    display: false
+		                  }
 		    		},
 		            scales: {
 		                x: {
@@ -369,25 +527,27 @@
 		    $("#nowH21").text(month+"월 사용량 예측");
 		    $("#nowH22").text(yearAllUsage[month-1]+" GWh");
 		    // 이번달 전력 사용량 평균값 구하기
+		    await thisMonthTotalUsage() // 이번달 전력사용량 총합
 		    let usageRate = 0;
 		    if (nowMonthAll !== 0) { // 0으로 나누기 방지
 		        usageRate = (yearAllUsage[month - 1] / nowMonthAll) * 100;
 		        usageRate = usageRate.toFixed(2); // 소수 둘째자리까지 반올림
+		        console.log("이번달 예측 퍼센트: "+usageRate+"%")
 		    } else {
 		        usageRate = "0.00"; // 혹시나 전체 사용량이 0일 때 대비
 		    }
 		    // 원형차트에 글씨넣는 플러그인
-		    const centerTextPlugin = {
+		    let centerTextPlugin = {
 		    		  id: 'centerText',
 		    		  beforeDraw(chart) {
-		    		    const ctx = chart.ctx;
-		    		    const {top, bottom, left, right} = chart.chartArea;
+		    		    let ctx = chart.ctx;
+		    		    let {top, bottom, left, right} = chart.chartArea;
 
 		    		    ctx.save();
 
 		    		    // 중앙 좌표 계산
-		    		    const centerX = (left + right) / 2;
-		    		    const centerY = (top + bottom) / 2;
+		    		    let centerX = (left + right) / 2;
+		    		    let centerY = (top + bottom) / 2;
 
 		    		    ctx.textAlign = 'center';
 		    		    ctx.textBaseline = 'middle';
@@ -409,7 +569,7 @@
 		    Chart4 = new Chart(nowUsageChart, {
 		    	  type: 'doughnut',
 		    	    data: {
-		    	    	labels: [$(this).find('h2').text()+" 전력 사용량", "전체 전력 사용량"],
+		    	    	labels: [month+"월 "+$(this).find('h2').text()+" 전력 사용량", month+"월 전체 시·도 전력 사용량"],
 		    	      	datasets: [{
 			    	        data: [yearAllUsage[month-1], nowMonthAll],
 			    	        backgroundColor: [
@@ -426,7 +586,10 @@
 		    			legend: {
 		                    display: false   // 범례
 		                },
-		    			centerText: true
+		    			centerText: true,
+		    	  	  	datalabels: {
+		    	            display: false
+		    	          }
 		    		}
 		    	},
 		   		plugins: [centerTextPlugin]
@@ -434,10 +597,38 @@
 		    
 		    // 차트5
 		    // 다음달 전력 사용량 예측값 가져오기
+		    await nextMonthTotalUsage() // 다음달 전력사용량 총합
 		    let nextUsage = await predictAndReturnCorrect($element, year, month + 1);
-		    
+	        usageRate2 = (nextUsage / nextMonthAll) * 100;
+	        usageRate2 = usageRate2.toFixed(2); // 소수 둘째자리까지 반올림
+	        console.log("다음달 예측 퍼센트: "+usageRate2+"%")
 		    $("#nowH23").text(month+1+"월 사용량 예측");
-		    $("#nowH24").text(yearAllUsage[month-1]+" GWh");
+		    $("#nowH24").text(nextUsage+" GWh");
+		    // 원형차트에 글씨넣는 플러그인
+		    let centerTextPlugin2 = {
+		    		  id: 'centerText',
+		    		  beforeDraw(chart) {
+		    		    let ctx = chart.ctx;
+		    		    let {top, bottom, left, right} = chart.chartArea;
+
+		    		    ctx.save();
+
+		    		    // 중앙 좌표 계산
+		    		    let centerX = (left + right) / 2;
+		    		    let centerY = (top + bottom) / 2;
+
+		    		    ctx.textAlign = 'center';
+		    		    ctx.textBaseline = 'middle';
+
+		    		    ctx.font = 'bold 16px Arial';  // 글꼴, 크기 조정 가능
+		    		    ctx.fillStyle = 'white';        // 글씨 색상
+
+		    		    ctx.fillText(region, centerX, centerY - 10);
+		    		    ctx.fillText(" "+usageRate2+"%", centerX, centerY + 10);
+
+		    		    ctx.restore();
+		    		  }
+		    };
 			// 차트 지우기
 		    if (Chart5) {
 		        Chart5.destroy();
@@ -446,9 +637,9 @@
 		    Chart5 = new Chart(nextUsageChart, {
 		    	  type: 'doughnut',
 		    	    data: {
-		    	    	labels: [$(this).find('h2').text()+" 전력 사용량", "전체 전력 사용량"],
+		    	    	labels: [month+1+"월 "+$(this).find('h2').text()+" 전력 사용량", month+1+"월 전체 시·도 전력 사용량"],
 		    	      	datasets: [{
-			    	        data: [nextUsage, nowMonthAll],
+			    	        data: [nextUsage, nextMonthAll],
 			    	        backgroundColor: [
 			    	        	'rgb(88, 121, 136)',
 				    	        'rgb(178, 211, 226)'
@@ -463,63 +654,16 @@
 		    			legend: {
 		                    display: false   // 범례
 		                },
-		    			centerText: true
+		    			centerText: true,
+		    	  	  	datalabels: {
+		    	            display: false
+		    	          }
 		    		}
 		    	},
-		   		plugins: [centerTextPlugin]
+		   		plugins: [centerTextPlugin2]
 		    });
+		    fetchWeatherForClickedMenu($(this));
 		});
 		// 사이트 로드시 서울정보 가져오기
 		$("#seoul").click();
-
 	});
-</script>
-</head>
-<body>
-<div id="main1">
-	<div id="menu">
-		<div class="menu" id="seoul" data-citycode="8"><h2>서울</h2><p>0GWh</p></div>
-		<div class="menu" id="busan" data-citycode="7"><h2>부산</h2><p>0GWh</p></div>
-		<div class="menu" id="daegu" data-citycode="5"><h2>대구</h2><p>0GWh</p></div>
-		<div class="menu" id="incheon" data-citycode="11"><h2>인천</h2><p>0GWh</p></div>
-		<div class="menu" id="daejeon" data-citycode="6"><h2>대전</h2><p>0GWh</p></div>
-		<div class="menu" id="gwangju" data-citycode="4"><h2>광주</h2><p>0GWh</p></div>
-		<div class="menu" id="ulsan" data-citycode="10"><h2>울산</h2><p>0GWh</p></div>
-		<div class="menu" id="sejong" data-citycode="9"><h2>세종</h2><p>0GWh</p></div>
-		<div class="menu" id="jeju" data-citycode="14"><h2>제주도</h2><p>0GWh</p></div>
-		<div class="menu" id="gyeonggi" data-citycode="1"><h2>경기도</h2><p>0GWh</p></div>
-		<div class="menu" id="gyeongnam" data-citycode="2"><h2>경상남도</h2><p>0GWh</p></div>
-		<div class="menu" id="gyeongbuk" data-citycode="3"><h2>경상북도</h2><p>0GWh</p></div>
-		<div class="menu" id="chungnam" data-citycode="15"><h2>충청남도</h2><p>0GWh</p></div>
-		<div class="menu" id="chungbuk" data-citycode="16"><h2>충청북도</h2><p>0GWh</p></div>
-		<div class="menu" id="jeonnam" data-citycode="12"><h2>전라남도</h2><p>0GWh</p></div>
-		<div class="menu" id="jeonbuk" data-citycode="13"><h2>전라북도</h2><p>0GWh</p></div>
-		<div class="menu" id="gangwon" data-citycode="0"><h2>강원도</h2><p>0GWh</p></div>
-	</div>
-	<div id="main">
-		<div id="prevUsageBox">
-			<h2>전년도 대비 사용량</h2>
-			<canvas id="prevUsageChart" width="870" height="380"></canvas>
-		</div>
-		<div id="monthUsageBox">
-			<h1 id="mainH1">서울 2025년 전력 사용량 분석</h1>
-			<div id="chartBox">
-				<div id="chart4Box"><canvas id="nowUsageChart" width="200" height="200"></canvas></div>
-				<div id="chart5Box"><canvas id="nextUsageChart" width="200" height="200"></canvas></div>
-				<div id="nowMonthBox1"><h2 id="nowH21">월 사용량 예측</h2><h2 id="nowH22">0000.00 GWh</h2></div>
-				<div id="nowMonthBox2"><h2 id="nowH23">월 사용량 예측</h2><h2 id="nowH24">0000.00 GWh</h2></div>
-			</div>
-		</div>
-		<div id="sMonthUsageBox">
-			<h2>최근 6개월 사용량</h2>
-			<canvas id="sMonthUsageChart" width="670" height="380"></canvas>
-		</div>
-		<div id="yearUsageBox">
-			<h2>최근 5년 6월 사용량</h2>
-			<canvas id="monthUsageChart" width="670" height="380"></canvas>
-		</div>
-	</div>
-</div>
-<h1 id="result"></h1>
-</body>
-</html>

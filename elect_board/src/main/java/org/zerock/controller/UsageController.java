@@ -1,41 +1,49 @@
 package org.zerock.controller;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.zerock.domain.ElectUsageVO;
 import org.zerock.service.ElectUsageService;
+import java.util.Collections;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-@Controller
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+
+// @Controller 대신 @RestController 써도 되고
+@RestController
 public class UsageController {
 
     @Autowired
     private ElectUsageService usageService;
 
-    @GetMapping("/usageChart")
-    public String usageChart(
+    @GetMapping(value = "/usageChart", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Map<String, Object> usageChart(
             @RequestParam(required = false, name = "years") List<String> years,
-            @RequestParam(required = false) String region,
-            Model model) throws Exception {
+            @RequestParam(required = false) String region) throws Exception {
 
-        // 선택값이 없으면 초기화 상태로 빈 데이터 전달
+        Map<String, Object> result = new HashMap<>();
+
+        // 선택값이 없으면 빈 데이터 반환
         if (years == null || years.isEmpty() || region == null || region.isBlank()) {
-            model.addAttribute("chartDataJson", "[]");
-            model.addAttribute("allDataMapJson", "{}");
-            model.addAttribute("regionList", usageService.getAllRegions());
-            model.addAttribute("selectedYears", Collections.emptyList());
-            model.addAttribute("selectedRegion", null);
-            return "usageChart";
+            result.put("chartData", Collections.emptyList());
+            result.put("allDataMap", Collections.emptyMap());
+            result.put("regionList", usageService.getAllRegions());
+            result.put("selectedYears", Collections.emptyList());
+            result.put("selectedRegion", null);
+            return result;
         }
 
-        // 선택값이 있으면 작년 데이터 포함하여 조회 준비
+        // 이전년도 포함 등 기존 로직 동일
         Set<String> yearsWithPrev = new LinkedHashSet<>(years);
         for (String y : years) {
             try {
@@ -43,24 +51,19 @@ public class UsageController {
                 if (prevYear >= 2014) {
                     yearsWithPrev.add(String.valueOf(prevYear));
                 }
-            } catch (NumberFormatException e) {
-                // 무시
-            }
+            } catch (NumberFormatException e) { }
         }
 
         List<String> yearsToQuery = new ArrayList<>(yearsWithPrev);
         Collections.sort(yearsToQuery);
 
-        // DB에서 선택된 연도 및 지역의 데이터 조회
         List<ElectUsageVO> usageList = usageService.getUsageByYearsAndRegion(yearsToQuery, region);
 
-        // 월별 데이터 맵 구성
         Map<String, List<Integer>> dataMap = new HashMap<>();
         for (ElectUsageVO vo : usageList) {
             dataMap.put(vo.getYear() + "_" + vo.getRegion(), extractMonthlyData(vo));
         }
 
-        // 현재 선택한 연도 데이터만 필터링 후 맵핑
         List<Map<String, Object>> currentYearData = usageList.stream()
                 .filter(vo -> years.contains(vo.getYear()))
                 .map(vo -> {
@@ -72,7 +75,6 @@ public class UsageController {
                 })
                 .collect(Collectors.toList());
 
-        // 누락된 조합에 null 데이터 추가 (빈 월별 데이터)
         Set<String> presentKeys = currentYearData.stream()
                 .map(m -> m.get("year") + "_" + m.get("region"))
                 .collect(Collectors.toSet());
@@ -92,19 +94,13 @@ public class UsageController {
             }
         }
 
-        // JSON 직렬화
-        ObjectMapper mapper = new ObjectMapper();
-        String chartDataJson = mapper.writeValueAsString(currentYearData);
-        String allDataMapJson = mapper.writeValueAsString(dataMap);
+        result.put("chartData", currentYearData);
+        result.put("allDataMap", dataMap);
+        result.put("regionList", usageService.getAllRegions());
+        result.put("selectedYears", years);
+        result.put("selectedRegion", region);
 
-        // 모델에 데이터 전달
-        model.addAttribute("chartDataJson", chartDataJson);
-        model.addAttribute("allDataMapJson", allDataMapJson);
-        model.addAttribute("regionList", usageService.getAllRegions());
-        model.addAttribute("selectedYears", years);
-        model.addAttribute("selectedRegion", region);
-
-        return "usageChart";
+        return result;
     }
 
     private List<Integer> extractMonthlyData(ElectUsageVO vo) {

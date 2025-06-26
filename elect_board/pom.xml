@@ -112,6 +112,12 @@
 			<version>${org.aspectj-version}</version>
 		</dependency>	
 		
+		<!-- JSON Object -->
+		<dependency>
+  			<groupId>org.json</groupId>
+  			<artifactId>json</artifactId>
+ 			 <version>20240303</version> <!-- 최신버전 -->
+		</dependency>
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
