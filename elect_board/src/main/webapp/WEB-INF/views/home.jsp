@@ -203,7 +203,7 @@
 			<canvas id="usageChart" width="600px" height="370px"></canvas>
 		</div>
 		<div class='middle down'>
-			<h2 id='totalTitle' class='div-main-h2'>2015년 강원도 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
+			<h2 id='totalTitle' class='div-main-h2'>${year}년 ${region} 총 전력 사용량</h2> <label class='annotation'>(단위/GWh)&nbsp;&nbsp;&nbsp;&nbsp; <br>※총 예측 사용량은 그 해의 실제 사용량이 존재하지 않으면 그 해 전체, 존재하면 존재하는 달 까지만 합산됩니다.</label><br>
 			<div id='t-text-container'>
 				<div class='t-text tt1'>
 				<h2 id='totalUse' class='t-h2'></h2>
