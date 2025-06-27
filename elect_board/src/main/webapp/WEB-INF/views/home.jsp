@@ -325,7 +325,7 @@
                     </select>
                 </div>
             </div>
-            <canvas id="usageChart"></canvas>
+            <canvas id="usageChart" class="realUsageChart123"></canvas>
             <div id="usageChartOverlay" class="chart-overlay">실제 전력 사용량이 없습니다.</div>
         </div>
     </div>

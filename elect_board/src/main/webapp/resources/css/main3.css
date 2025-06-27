@@ -146,10 +146,15 @@ div {
 .chart-container label, .chart-container select{margin: 0px;}
 .chart-header h3{position:relative;bottom:5px;}
 
-.chart-container canvas {
+#predictedChart, #longTermChart {
     flex: 1;
     width: 100% !important;
-    height: 90% !important;
+    height: 565px !important;
+}
+.realUsageChart123 {
+    flex: 1;
+    width: 100% !important;
+    height: 555px !important;
 }
 
 /* 오버레이 메시지 */
