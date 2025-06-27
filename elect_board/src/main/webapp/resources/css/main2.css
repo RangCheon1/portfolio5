@@ -38,6 +38,7 @@ div {
 	display: flex;
 	flex-wrap: wrap;
 	overflow:hidden;
+	padding-top:10px;
 }
 
 /* 지도박스 */
@@ -137,13 +138,19 @@ border: 1px solid rgb(15, 25, 50);
     box-shadow:2px 2px 4px rgba(0,0,0,0.7);
 }
 .select2{
-	border-radius:5px;
-	font-size:14px;
-	padding-left:3px;
-	height:19px;
+	background-color: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    color: #f9fafb;
+    padding: 8px 14px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
 }
 .select-label2{
-	font-size:15px;
+	color: #9ca3af;
+    font-weight: 600;
+    font-size: 1.1rem;
 }
 .explain-button{
 	background-color:#eeeeee;
@@ -158,9 +165,9 @@ border: 1px solid rgb(15, 25, 50);
 }
 #selectBox {
 	display: inline-block;
-	padding-left: 165px;
+	padding-left: 250px;
 }
-#usageChart{
+.middle #usageChart{
 margin-top:35px;
 }
 option{

@@ -446,9 +446,14 @@
 		    		plugins: {
 		    			legend: {
 		                    display: false   // 범례
-		                },
+		                }
+		                ,
 		          	  	datalabels: {
-		                    display: false
+		                    //display: false
+		                    color:'black',
+		                    font: { weight: 'bold', size: 12 },
+    	        textStrokeColor: 'white',                  // ✅ 테두리 색상
+    	        textStrokeWidth: 1                         // ✅ 테두리 두께
 		                  }
 		    		},
 		            scales: {
@@ -501,9 +506,14 @@
 		    		plugins: {
 		    			legend: {
 		                    display: false   // 범례
-		                },
+		                }
+		               ,
 		          	  	datalabels: {
-		                    display: false
+		                    //display: false
+		                    color:'black',
+		                    font: { weight: 'bold', size: 12 },
+    	        textStrokeColor: 'white',                  // ✅ 테두리 색상
+    	        textStrokeWidth: 1                         // ✅ 테두리 두께
 		                  }
 		    		},
 		            scales: {

@@ -12,22 +12,22 @@ import java.util.stream.Collectors;
 public class WeatherParser {
 
     /**
-     * JSON ¹®ÀÚ¿­À» ÆÄ½ÌÇÏ¿© ¿À´Ã Æ÷ÇÔ ÃÖ´ë 4ÀÏÄ¡ ´Ü±â¿¹º¸ ¸®½ºÆ® ¹İÈ¯
-     * @param jsonString ±â»óÃ» ´Ü±â¿¹º¸ JSON ¿ø¹®
-     * @return DailyWeatherVO ¸®½ºÆ®
-     * @throws Exception ÆÄ½Ì ½ÇÆĞ½Ã ¿¹¿Ü ¹ß»ı
+     * JSON ë¬¸ìì—´ì„ íŒŒì‹±í•˜ì—¬ ë‚ ì§œë³„ë¡œ ì¡´ì¬í•˜ëŠ” ìµœëŒ€ 4ì¼ì¹˜ ì˜ˆë³´ì •ë³´ ë¦¬ìŠ¤íŠ¸ë¡œ ë³€í™˜
+     * @param jsonString ë‹¨ê¸° ì˜ˆë³´ JSON ë°ì´í„°
+     * @return DailyWeatherVO ë¦¬ìŠ¤íŠ¸
+     * @throws Exception íŒŒì‹± ì¤‘ ì˜¤ë¥˜ ë°œìƒ ì‹œ ì˜ˆì™¸
      */
     public List<DailyWeatherVO> parseShortTermForecast(String jsonString) throws Exception {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(jsonString);
 
-        // JSON °æ·Î: response > body > items > item (¹è¿­)
+        // JSON ê²½ë¡œ: response > body > items > item (ë°°ì—´)
         JsonNode items = root.path("response")
                              .path("body")
                              .path("items")
                              .path("item");
 
-        // Map<³¯Â¥, Map<Ä«Å×°í¸®, List<°ª>>> ÇüÅÂ·Î ºĞ·ù
+        // Map<ë‚ ì§œ, Map<ì¹´í…Œê³ ë¦¬, List<ê°’>>> í˜•íƒœë¡œ ì €ì¥
         Map<String, Map<String, List<String>>> dailyCategoryValues = new HashMap<>();
 
         for (JsonNode item : items) {
@@ -47,7 +47,7 @@ public class WeatherParser {
 
         String todayString = LocalDate.now().format(dtf);
 
-        // ³¯Â¥ Á¤·Ä ÈÄ ¿À´Ã Æ÷ÇÔ ÃÖ´ë 4ÀÏÄ¡ Ã³¸®
+        // ë‚ ì§œ ê¸°ì¤€ìœ¼ë¡œ ì •ë ¬ í›„ ìµœëŒ€ 4ì¼ì¹˜ ì²˜ë¦¬
         List<String> sortedDates = new ArrayList<>(dailyCategoryValues.keySet());
         sortedDates.sort(Comparator.naturalOrder());
 
@@ -68,7 +68,7 @@ public class WeatherParser {
                 if (!tmnList.isEmpty()) {
                     minTemp = (int) Math.round(Double.parseDouble(tmnList.get(0)));
                 } else {
-                    // ¿À´Ã ³¯Â¥ÀÌ°í TMN ¾øÀ¸¸é 0500½Ã TMP °ªÀ¸·Î ´ëÃ¼
+                    // ì˜¤ëŠ˜ ë‚ ì§œì´ê³  TMNì´ ì—†ì„ ê²½ìš° 0500ì‹œ TMP ë°ì´í„°ë¡œ ëŒ€ì²´
                     if (date.equals(todayString)) {
                         List<String> tmpList = catMap.getOrDefault("TMP", Collections.emptyList());
                         if (!tmpList.isEmpty()) {
@@ -89,7 +89,7 @@ public class WeatherParser {
             String precipitation = convertPtyCodeToString(ptyCode);
 
             DailyWeatherVO vo = new DailyWeatherVO();
-            vo.setDate(LocalDate.parse(date, dtf).toString()); // yyyy-MM-dd Æ÷¸ËÀ¸·Î º¯È¯
+            vo.setDate(LocalDate.parse(date, dtf).toString()); // yyyy-MM-dd í¬ë§·ìœ¼ë¡œ ë³€í™˜
             vo.setMaxTemperature(maxTemp);
             vo.setMinTemperature(minTemp);
             vo.setSky(sky);
@@ -102,7 +102,7 @@ public class WeatherParser {
     }
 
     /**
-     * ¸®½ºÆ®¿¡¼­ °¡Àå ºóµµ°¡ ³ôÀº ÄÚµå ¹İÈ¯ (¾øÀ¸¸é "0")
+     * ë¦¬ìŠ¤íŠ¸ì—ì„œ ê°€ì¥ ë¹ˆë„ ë†’ì€ ì½”ë“œ ë°˜í™˜ (ê¸°ë³¸ê°’ì€ "0")
      */
     private String getMostFrequentCode(List<String> codes) {
         if (codes.isEmpty()) return "0";
@@ -120,28 +120,28 @@ public class WeatherParser {
     }
 
     /**
-     * SKY ÄÚµå ¡æ ³¯¾¾ ¹®ÀÚ¿­ º¯È¯
+     * SKY ì½”ë“œ -> ì„¤ëª… ë¬¸ìì—´ë¡œ ë³€í™˜
      */
     private String convertSkyCodeToString(String code) {
         switch (code) {
-            case "1": return "¸¼À½";
-            case "3": return "±¸¸§¸¹À½";
-            case "4": return "Èå¸²";
-            default: return "¾Ë¼ö¾øÀ½";
+            case "1": return "ë§‘ìŒ";
+            case "3": return "êµ¬ë¦„ ë§ìŒ";
+            case "4": return "íë¦¼";
+            default: return "ì•Œ ìˆ˜ ì—†ìŒ";
         }
     }
 
     /**
-     * PTY ÄÚµå ¡æ °­¼ö ÇüÅÂ ¹®ÀÚ¿­ º¯È¯
+     * PTY ì½”ë“œ -> ê°•ìˆ˜ í˜•íƒœ ë¬¸ìì—´ë¡œ ë³€í™˜
      */
     private String convertPtyCodeToString(String code) {
         switch (code) {
-            case "0": return "¾øÀ½";
-            case "1": return "ºñ";
-            case "2": return "ºñ/´«";
-            case "3": return "´«";
-            case "4": return "¼Ò³ª±â";
-            default: return "¾Ë¼ö¾øÀ½";
+            case "0": return "ì—†ìŒ";
+            case "1": return "ë¹„";
+            case "2": return "ë¹„/ëˆˆ";
+            case "3": return "ëˆˆ";
+            case "4": return "ì†Œë‚˜ê¸°";
+            default: return "ì•Œ ìˆ˜ ì—†ìŒ";
         }
     }
 }

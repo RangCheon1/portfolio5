@@ -10,6 +10,7 @@ body {
     background: linear-gradient(to bottom, rgb(0, 12, 28), rgb(86, 102, 118));
     background-repeat: repeat-y;
     background-size: 100% 100vh; /* 세로 98vh만큼만 그라데이션 */
+    margin:0;
 }
 
 #main1{
@@ -69,7 +70,7 @@ body {
 
 #sMonthUsageBox {
 	width: 680px;
-    height: 450px;
+    height: 220px;
     overflow: hidden;
     border-radius: 10px;
     padding: 0px;
@@ -77,7 +78,17 @@ body {
     background-color:rgba(0, 0, 0, 0.5);
 	margin-left: 25px;
 }
-	
+#sMonthUsageBox2 {
+	width: 680px;
+    height: 220px;
+    overflow: hidden;
+    border-radius: 10px;
+    padding: 0px;
+    box-sizing: border-box;
+    background-color:rgba(0, 0, 0, 0.5);
+	margin-left: 25px;
+}
+
 #monthUsageBox {
 	width: 510px;
     height: 450px;
@@ -143,7 +154,11 @@ body {
 
 
 
-#prevUsageBox , #sMonthUsageBox, #weatherBox {padding-left: 20px; padding-right: 20px; margin-top: 10px;}
+#prevUsageBox , #sMonthUsageBox,#sMonthUsageBox2, #weatherBox {padding-left: 20px; padding-right: 20px; margin-top: 10px;}
+
+#sMonthUsageBox, #MonthUsageBox h2{
+	
+}
 
 .menu {
     width: 110px;
@@ -225,7 +240,10 @@ width:11vw;
 margin:0 auto;
 }
 .current_class{
-    color:orange;
+    color:#0066ff;
+    text-shadow: 3px 3px 3px #003e9b;
+/*     background-color:#00173a; */
+    border-radius:20px;
     font-weight: bold;
 }
 
