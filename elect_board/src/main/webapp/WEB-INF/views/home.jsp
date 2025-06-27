@@ -69,11 +69,11 @@
 		<div>
 		<div id="sMonthUsageBox">
 			<h2>최근 6개월 사용량</h2>
-			<canvas id="sMonthUsageChart" width="670" height="155"></canvas>
+			<canvas id="sMonthUsageChart" width="670" height="145"></canvas>
 		</div>
 		<div id="sMonthUsageBox2">
 			<h2>최근 5년 6월 사용량</h2>
-			<canvas id="monthUsageChart" width="670" height="155"></canvas>
+			<canvas id="monthUsageChart" width="670" height="145"></canvas>
 		</div>
 		</div>
 		<div id="weatherBox">
@@ -90,32 +90,32 @@
     			</thead>
     			<tbody>
       				<tr id="day1">
-        				<td>6/25 (수)</td>
-        				<td>☁️ 흐림</td>
-        				<td>0℃</td>
-        				<td>0℃</td>
-        				<td>감소 예상 ↓</td>
+        				<td>XX/XX (X)</td>
+        				<td>XX</td>
+        				<td>X℃</td>
+        				<td>X℃</td>
+        				<td>XX XX</td>
       				</tr>
       				<tr id="day2">
-        				<td>6/26 (목)</td>
-        				<td>🌨️🌧️ 비/눈</td>
-        				<td>0℃</td>
-        				<td>0℃</td>
-        				<td>증가 예상 ↑</td>
+        				<td>>XX/XX (X)</td>
+        				<td>XX</td>
+        				<td>X℃</td>
+        				<td>X℃</td>
+        				<td>XX XX</td>
       				</tr>
       				<tr id="day3">
-        				<td>6/27 (금)</td>
-        				<td>☁️ 흐림</td>
-        				<td>0℃</td>
-        				<td>0℃</td>
-        				<td>유지 예상 →</td>
+        				<td>>XX/XX (X)</td>
+        				<td>XX</td>
+        				<td>X℃</td>
+        				<td>X℃</td>
+        				<td>XX XX</td>
       				</tr>
       				<tr id="day4">
-        				<td>6/28 (토)</td>
-        				<td>☁️ 흐림</td>
-        				<td>0℃</td>
-        				<td>0℃</td>
-        				<td>증가 예상 ↑</td>
+        				<td>>XX/XX (X)</td>
+        				<td>X</td>
+        				<td>X℃</td>
+        				<td>X℃</td>
+        				<td>XX XX</td>
       				</tr>
     			</tbody>
   			</table>
@@ -386,7 +386,6 @@ function drawActualUsageChart(chartData) {
   const selectedRegion = container.querySelector('select[name="region"]').value;
 
   if (!selectedRegion || selectedRegion === '' || selectedYears.length === 0) {
-    canvas.classList.add('blur');
     overlay.textContent = '지역,연도를 선택해주세요.';
     overlay.classList.add('show');
     if (usageChart) {
@@ -406,7 +405,6 @@ function drawActualUsageChart(chartData) {
   );
 
   if (filteredData.length === 0) {
-    canvas.classList.add('blur');
     overlay.textContent = '실제 전력 사용량이 없습니다.';
     overlay.classList.add('show');
     if (usageChart) {
@@ -418,7 +416,6 @@ function drawActualUsageChart(chartData) {
     return;
   }
 
-  canvas.classList.remove('blur');
   overlay.classList.remove('show');
 
   // 실제 데이터 전역 변수에 저장 및 allDataMap 채우기
@@ -542,7 +539,6 @@ async function drawPredictedUsageChart(chartData) {
   if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
     overlay.textContent = '지역,연도를 선택해주세요.';
     overlay.classList.add('show');
-    canvas.classList.add('blur');
     if (predictedChart) {
       predictedChart.destroy();
       predictedChart = null;
@@ -555,7 +551,6 @@ async function drawPredictedUsageChart(chartData) {
   if (selectedYears.some(year => Number(year) > 2026)) {
     overlay.textContent = '2026년 3월까지 예측이 가능합니다.';
     overlay.classList.add('show');
-    canvas.classList.add('blur');
     if (predictedChart) {
       predictedChart.destroy();
       predictedChart = null;
@@ -565,7 +560,6 @@ async function drawPredictedUsageChart(chartData) {
   }
 
   overlay.classList.remove('show');
-  canvas.classList.remove('blur');
 
   const yearSet = new Set(), regionSet = new Set();
   chartData.forEach(d => {
@@ -751,7 +745,6 @@ async function drawLongTermUsageChart(chartData) {
   if (!selectedRegion || selectedRegion === "" || selectedYears.length === 0) {
     overlay.textContent = '지역, 연도를 선택해주세요.';
     overlay.classList.add('show');
-    canvas.classList.add('blur');
     if (longTermChart) {
       longTermChart.destroy();
       longTermChart = null;
@@ -761,7 +754,6 @@ async function drawLongTermUsageChart(chartData) {
   }
 
   overlay.classList.remove('show');
-  canvas.classList.remove('blur');
 
   const yearSet = new Set(), regionSet = new Set();
   chartData.forEach(d => {
