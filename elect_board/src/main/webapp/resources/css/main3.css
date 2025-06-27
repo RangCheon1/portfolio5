@@ -113,7 +113,6 @@ div {
     justify-content: space-between;
     flex: 1;
     flex-wrap: wrap;
-    margin-top: 10px;
 }
 
 .chart-row.three-charts {
@@ -133,15 +132,19 @@ div {
     position: relative;
     background-color:rgba(0, 0, 0, 0.5);
     border-radius: 10px;
+    padding: 20px 20px 20px 20px;
 }
 
+.realSelectBox{position:relative;bottom:3px;}
+
 .chart-container h3 {
-    margin: 5px 10px 10px 10px;
     color: #ececec;
     font-size: 1.2rem;
     font-weight: 700;
-    text-align: center;
+    margin: 0px;
 }
+.chart-container label, .chart-container select{margin: 0px;}
+.chart-header h3{position:relative;bottom:5px;}
 
 .chart-container canvas {
     flex: 1;

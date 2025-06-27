@@ -111,7 +111,7 @@
         				<td>XX XX</td>
       				</tr>
       				<tr id="day4">
-        				<td>>XX/XX (X)</td>
+        				<td>XX/XX (X)</td>
         				<td>X</td>
         				<td>X℃</td>
         				<td>X℃</td>
@@ -315,10 +315,10 @@
         <!-- 실제 사용량 -->
         <div class="chart-container" style="position: relative;">
             <div class="chart-header" 
-                style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; padding: 5px 20px 0 10px;">
+                style="display: flex; align-items: center; justify-content: space-between;">
                 <h3 style="margin: 0;">월별 전력 사용량 미리보기</h3>
-                <div class="form-group" style="margin: 0;">
-                    <label for="chartType" style="margin-right: 8px;">그래프 타입:</label>
+                <div class="form-group realSelectBox" style="margin: 0;">
+                    <label for="chartType"">그래프 타입:</label>
                     <select id="chartType" onchange="updateChartType()">
                         <option value="bar">막대 그래프</option>
                         <option value="line">선형 그래프</option>
