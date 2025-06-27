@@ -456,7 +456,7 @@ function drawActualUsageChart(chartData) {
       responsive: true,
       maintainAspectRatio: false,
       plugins: {
-        title: { display: true, text: ['장기 예측 사용량 vs 실제 사용량', '범례 클릭 시 다른 연도 사용값이 표시됩니다'], padding: { top: 10, bottom: 10 }, font: { size: 12 } },
+        title: { display: true, text: ['실제 사용량', '범례 클릭 시 다른 연도 사용값이 표시됩니다'], padding: { top: 10, bottom: 10 }, font: { size: 12 } },
         legend: { position: 'top' }
         ,
   	  	datalabels: {
@@ -603,7 +603,8 @@ async function drawPredictedUsageChart(chartData) {
   
   console.log('allPredictions:', allPredictions); // 전체 출력
 
-  const colors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
+  const actualcolors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
+  const predictcolors = ['rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
   const labels = monthLabels;
 
   const datasets = [];
@@ -620,8 +621,8 @@ async function drawPredictedUsageChart(chartData) {
     datasets.push({
       label: labelPrefix + " 예측",
       data: pred.predictedArray,
-      backgroundColor: colors[idx % colors.length],
-      borderColor: colors[idx % colors.length],
+      backgroundColor: predictcolors[idx % predictcolors.length],
+      borderColor: predictcolors[idx % predictcolors.length],
       borderWidth: 2,
       type: 'line',
       fill: false,
@@ -635,8 +636,8 @@ async function drawPredictedUsageChart(chartData) {
     datasets.push({
       label: labelPrefix + " 실제",
       data: pred.actualData,
-      backgroundColor: colors[idx % colors.length].replace('1)', '0.3)'),
-      borderColor: colors[idx % colors.length].replace('1)', '0.5)'),
+      backgroundColor: actualcolors[idx % actualcolors.length],
+      borderColor: actualcolors[idx % actualcolors.length],
       borderWidth: 1,
       type: 'bar',
       barPercentage: 0.4,
@@ -773,7 +774,8 @@ async function drawLongTermUsageChart(chartData) {
   const filteredRegions = selectedRegion === 'all' ? regions : [selectedRegion];
   const filteredYears = selectedYears;
 
-  const colors = ['rgba(75, 192, 192, 1)', 'rgba(153, 102, 255, 1)', 'rgba(255, 159, 64, 1)'];
+  const actualcolors = ['rgba(255, 99, 132)', 'rgba(54, 162, 235)', 'rgba(255, 206, 86)'];
+  const predictcolors = ['rgba(75, 192, 192)', 'rgba(153, 102, 255)', 'rgba(255, 159, 64)'];
   const datasets = [];
   let idx = 0;
 
@@ -792,8 +794,8 @@ async function drawLongTermUsageChart(chartData) {
       datasets.push({
         label: labelPrefix + " 예측 (모델 추정)",
         data: predictedArray,
-        backgroundColor: colors[idx % colors.length],
-        borderColor: colors[idx % colors.length],
+        backgroundColor: predictcolors[idx % predictcolors.length],
+        borderColor: predictcolors[idx % predictcolors.length],
         borderWidth: 2,
         type: 'line',
         fill: false,
@@ -805,7 +807,7 @@ async function drawLongTermUsageChart(chartData) {
 
       // 실제 데이터 막대 그래프 (실제 데이터가 있으면)
       if (actualMonthly) {
-        const colorTransparent = colors[idx % colors.length].replace('1)', '0.3)');
+        const colorTransparent = actualcolors[idx % actualcolors.length].replace('1)', '0.3)');
         datasets.push({
           label: labelPrefix + " 실제",
           data: actualMonthly,
